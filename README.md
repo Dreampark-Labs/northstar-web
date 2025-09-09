@@ -16,13 +16,13 @@ The project foundation has been implemented with:
 - **Soft Delete System**: Proper soft delete with 30-day purge and 7-day undo window
 - **Development Environment**: Hot reloading, TypeScript config, and build tools
 
-### 🚧 In Progress / Next Steps
+### 🚧 Next Steps
+- **⚠️ Convex Backend Setup**: Interactive login required (see [CONVEX_SETUP.md](./CONVEX_SETUP.md))
 - **Authentication**: Clerk integration for user management
 - **CRUD Operations**: Full create/read/update/delete for all entities
 - **File Management**: Upload system with metadata tracking
 - **Search**: Global search across all content
 - **Dashboard Modules**: "This Week", "Due Soon", "Grades Overview", "Quick Files"
-- **Testing**: Unit tests with Vitest and E2E tests with Playwright
 
 ## 🛠 Tech Stack
 
@@ -41,14 +41,28 @@ The project foundation has been implemented with:
 
 ### Installation
 ```bash
-# Install dependencies
+# 1. Install dependencies
 npm install
 
-# Start development server
+# 2. Set up Convex backend (required)
+npx convex login
+npx convex dev --once --configure=new
+
+# 3. Configure environment variables
+cp .env.example .env.local
+# Add your Convex URL and deploy key to .env.local
+
+# 4. Start development servers
+# Terminal 1: Convex backend
+npx convex dev
+
+# Terminal 2: Next.js frontend  
 npm run dev
 ```
 
-Visit http://localhost:3001 to see the current dashboard.
+Visit http://localhost:3001 to see the dashboard.
+
+> **⚠️ Important**: The Convex backend must be set up first. See [CONVEX_SETUP.md](./CONVEX_SETUP.md) for detailed instructions.
 
 ## 📁 Project Structure
 
