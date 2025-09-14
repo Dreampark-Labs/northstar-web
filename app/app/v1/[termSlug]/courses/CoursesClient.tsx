@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card/Card';
 import { Button } from '@/components/ui/Button/Button';
 import { EmptyState } from '@/components/ui/EmptyState/EmptyState';
-import { CustomizableGrid, type GridComponent } from '@/components/layout/CustomizableGrid';
 import { DynamicHead } from '@/components/ui/DynamicHead';
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -449,64 +448,6 @@ export function CoursesClient() {
     openScheduleModal();
   };
 
-  const gridComponents: GridComponent[] = [
-    {
-      id: 'course-overview',
-      content: (
-        <Card style={{ height: '100%' }}>
-          <CardHeader>
-            <CardTitle>Course Overview</CardTitle>
-          </CardHeader>
-          <CardContent style={{ padding: 0, height: 'calc(100% - 60px)' }}>
-            <CurrentTermOverview />
-          </CardContent>
-        </Card>
-      ),
-      defaultSize: { w: 2, h: 1 },
-      minSize: { w: 2, h: 1 },
-      maxSize: { w: 3, h: 2 }
-    },
-    {
-      id: 'quick-actions',
-      content: (
-        <Card style={{ height: '100%' }}>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent style={{ padding: 0, height: 'calc(100% - 60px)' }}>
-            <QuickActions onAddCourse={handleCourseOpen} onViewSchedule={handleScheduleOpen} />
-          </CardContent>
-        </Card>
-      ),
-      defaultSize: { w: 2, h: 1 },
-      minSize: { w: 2, h: 1 },
-      maxSize: { w: 3, h: 2 }
-    },
-    {
-      id: 'all-courses',
-      content: (
-        <Card style={{ height: '100%' }}>
-          <CardHeader>
-            <CardTitle>All Courses</CardTitle>
-          </CardHeader>
-          <CardContent style={{ padding: 0, height: 'calc(100% - 60px)' }}>
-            <CoursesList />
-          </CardContent>
-        </Card>
-      ),
-      defaultSize: { w: 6, h: 2 },
-      minSize: { w: 4, h: 1 },
-      maxSize: { w: 6, h: 4 }
-    }
-  ];
-
-  const actionButton = (
-    <Button onClick={handleCourseOpen}>
-      <Plus size={16} />
-      New Course
-    </Button>
-  );
-
   return (
     <>
       <DynamicHead 
@@ -514,12 +455,120 @@ export function CoursesClient() {
         description="Manage your academic courses, track schedules, and organize your studies"
         keywords={['courses', 'classes', 'schedule', 'academic', 'student']}
       />
-      <CustomizableGrid
-        pageId="courses"
-        pageTitle="Courses"
-        components={gridComponents}
-        actionButton={actionButton}
-      />
+      
+      {/* Page Container */}
+      <div style={{ 
+        padding: '24px', 
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {/* Header with Title and New Course Button */}
+        <div style={{ 
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexShrink: 0
+        }}>
+          <h1 style={{
+            fontSize: '32px',
+            fontWeight: '700',
+            color: 'var(--color-fg)',
+            margin: 0
+          }}>
+            Courses
+          </h1>
+          <Button onClick={handleCourseOpen}>
+            <Plus size={16} />
+            New Course
+          </Button>
+        </div>
+
+        {/* Fixed Grid Layout */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, 1fr)',
+          gridTemplateRows: 'repeat(5, 1fr)',
+          gap: '24px',
+          width: '100%',
+          flex: 1,
+          minHeight: '800px'
+        }}>
+          {/* Course Overview - 3x2 on the left */}
+          <div style={{ gridColumn: '1 / 4', gridRow: '1 / 3' }}>
+            <Card style={{ 
+              height: '100%', 
+              minHeight: '320px',
+              maxHeight: '100%',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <CardHeader style={{ flexShrink: 0 }}>
+                <CardTitle>Course Overview</CardTitle>
+              </CardHeader>
+              <CardContent style={{ 
+                padding: 0, 
+                flex: 1,
+                overflow: 'hidden',
+                minHeight: 0
+              }}>
+                <CurrentTermOverview />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Quick Actions - 3x2 on the right */}
+          <div style={{ gridColumn: '4 / 7', gridRow: '1 / 3' }}>
+            <Card style={{ 
+              height: '100%', 
+              minHeight: '320px',
+              maxHeight: '100%',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <CardHeader style={{ flexShrink: 0 }}>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent style={{ 
+                padding: 0, 
+                flex: 1,
+                overflow: 'hidden',
+                minHeight: 0
+              }}>
+                <QuickActions onAddCourse={handleCourseOpen} onViewSchedule={handleScheduleOpen} />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* All Courses - 6x3 spanning the full width below */}
+          <div style={{ gridColumn: '1 / 7', gridRow: '3 / 6' }}>
+            <Card style={{ 
+              height: '100%', 
+              minHeight: '480px',
+              maxHeight: '100%',
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <CardHeader style={{ flexShrink: 0 }}>
+                <CardTitle>All Courses</CardTitle>
+              </CardHeader>
+              <CardContent style={{ 
+                padding: 0, 
+                flex: 1,
+                overflow: 'hidden',
+                minHeight: 0
+              }}>
+                <CoursesList />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
