@@ -1,0 +1,1 @@
+export { DynamicHead } from './DynamicHead';

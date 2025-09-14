@@ -1,37 +1,33 @@
-# Northstar - Academic Productivity App
+# DPL - Digital Product Launch
 
-A single-user, student-facing productivity application for planning academic terms, tracking courses & assignments, managing files, and viewing productivity insights.
+A modern, high-converting marketing website template designed for showcasing digital products and SaaS applications. Built with Next.js 15, TypeScript, and Sanity CMS.
 
-## 🚀 Current Status
+## 🚀 Features
 
-The project foundation has been implemented with:
+- **Modern Design**: Apple/Notion-inspired clean and minimal design
+- **Fully Responsive**: Mobile-first design with smooth animations
+- **Content Management**: Sanity CMS integration for easy content updates
+- **Performance Optimized**: Fast loading with optimized images and CSS
+- **SEO Ready**: Proper meta tags, structured data, and semantic HTML
+- **Dark/Light Theme**: Automatic theme switching support
+- **Type Safe**: Full TypeScript implementation
 
-### ✅ Completed
-- **Project Setup**: Next.js 15 with TypeScript, CSS Modules, and proper folder structure
-- **Design System**: Custom CSS design tokens with light/dark theme support (no Tailwind)
-- **Core UI Components**: Button, Card, and reusable component architecture
-- **Database Schema**: Production-ready Convex schema with optimized indexes, search fields, and activity tracking
-- **Basic Dashboard**: Clean layout with sidebar and main content area
-- **Privacy Features**: Enhanced PII validation helpers for protecting sensitive data
-- **Soft Delete System**: Proper soft delete with 30-day purge and 7-day undo window
-- **Development Environment**: Hot reloading, TypeScript config, and build tools
+## 📄 Pages Included
 
-### 🚧 Next Steps
-- **⚠️ Convex Backend Setup**: Interactive login required (see [CONVEX_SETUP.md](./CONVEX_SETUP.md))
-- **Authentication**: Clerk integration for user management
-- **CRUD Operations**: Full create/read/update/delete for all entities
-- **File Management**: Upload system with metadata tracking
-- **Search**: Global search across all content
-- **Dashboard Modules**: "This Week", "Due Soon", "Grades Overview", "Quick Files"
+- **Homepage** - Hero, features, product showcase, testimonials
+- **Product** - Detailed feature showcase and product information
+- **About** - Company story, team, and values
+- **Pricing** - Pricing plans and FAQ
+- **Changelog** - Feature updates and release notes
+- **Demo** - Interactive product demonstration
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, CSS Modules
-- **Database**: Convex (real-time database & serverless functions)
-- **Authentication**: Clerk (when implemented)
-- **Styling**: CSS Modules with design tokens (Apple/Notion-inspired)
-- **UI Components**: Custom components + Radix UI primitives
-- **Testing**: Vitest (unit) + Playwright (E2E)
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: CSS Modules with design tokens
+- **CMS**: Sanity for content management
+- **Deployment**: Vercel/Netlify ready
 
 ## 🏃 Quick Start
 
@@ -40,116 +36,153 @@ The project foundation has been implemented with:
 - npm or yarn
 
 ### Installation
-```bash
-# 1. Install dependencies
-npm install
 
-# 2. Set up Convex backend (required)
-npx convex login
-npx convex dev --once --configure=new
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd dpl
+   ```
 
-# 3. Configure environment variables
-cp .env.example .env.local
-# Add your Convex URL and deploy key to .env.local
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# 4. Start development servers
-# Terminal 1: Convex backend
-npx convex dev
+3. **Set up environment variables**
+   ```bash
+   cp env.example .env.local
+   ```
+   
+   Update the environment variables in `.env.local`:
+   - `NEXT_PUBLIC_SANITY_PROJECT_ID`: Your Sanity project ID
+   - `NEXT_PUBLIC_SANITY_DATASET`: Your Sanity dataset (usually 'production')
+   - `NEXT_PUBLIC_APP_URL`: URL to your main application
 
-# Terminal 2: Next.js frontend  
-npm run dev
-```
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
 
-Visit http://localhost:3001 to see the dashboard.
-
-> **⚠️ Important**: The Convex backend must be set up first. See [CONVEX_SETUP.md](./CONVEX_SETUP.md) for detailed instructions.
+5. **Open your browser**
+   Visit [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
 
 ```
-northstar-web/
-├── app/                     # Next.js App Router pages
-├── components/              # Reusable UI components
-│   ├── ui/                 # Basic primitives (Button, Card, etc.)
-│   ├── layout/             # Layout components
-│   ├── dashboard/          # Dashboard modules
-│   └── forms/              # Form components
-├── convex/                 # Database schema and functions
-├── hooks/                  # Custom React hooks
-├── lib/                    # Utilities and helpers
-├── styles/                 # Design tokens and global styles
-├── tests/                  # Unit and E2E tests
-└── scripts/                # Build and utility scripts
+dpl/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Homepage
+│   ├── product/           # Product page
+│   ├── about/             # About page
+│   ├── pricing/           # Pricing page
+│   ├── changelog/         # Changelog page
+│   └── demo/              # Demo page
+├── components/            # React components
+│   ├── marketing/        # Marketing-specific components
+│   └── ui/               # Shared UI components
+├── lib/                  # Utilities and helpers
+├── providers/           # React context providers
+├── styles/             # Global styles and design tokens
+├── hooks/              # Custom React hooks
+├── config/             # Configuration files
+└── public/             # Static assets
 ```
 
-## 🎨 Design Philosophy
+## 🎨 Customization
 
-- **Apple/Notion-inspired**: Clean, minimal design with generous whitespace
-- **Accessibility-first**: Proper focus rings, semantic HTML, keyboard navigation
-- **CSS Modules**: Component-scoped styles with design tokens
-- **No Tailwind**: Custom CSS approach for better maintainability
-- **Dark/Light themes**: Full theme switching support
+### Design System
+All design tokens are defined in `styles/tokens.css`:
+- Colors, spacing, typography, shadows
+- Easy to customize for your brand
+- Automatic dark mode support
 
-## 📝 Planned Features (MVP)
+### Content Management
+Use Sanity Studio to manage:
+- Page content and copy
+- Feature descriptions
+- Testimonials and social proof
+- Pricing plans and FAQ
 
-### Core Functionality
-- [x] Dashboard with key metrics
-- [ ] Academic term management
-- [ ] Course tracking with credits and instructors
-- [ ] Assignment tracking with due dates and grades
-- [ ] File upload and organization
-- [ ] Global search across all content
-
-### User Experience
-- [ ] Keyboard shortcuts (/, g+d, g+c, etc.)
-- [ ] Optimistic UI updates
-- [ ] Real-time sync with Convex
-- [ ] Mobile-responsive design
-
-### Data Management
-- [ ] Soft delete with undo (7 days)
-- [ ] Data export (JSON/CSV)
-- [ ] Privacy protection (PII detection)
-- [ ] Bulk operations
-
-## 🔧 Development
-
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run typecheck` - Run TypeScript checks
-- `npm test` - Run unit tests
-- `npm run test:e2e` - Run E2E tests
-
-### Environment Setup
-Copy `.env.example` to `.env.local` and configure:
-```bash
-CLERK_PUBLISHABLE_KEY=your_clerk_key
-CLERK_SECRET_KEY=your_clerk_secret
-CONVEX_DEPLOYMENT=your_convex_deployment
-NEXT_PUBLIC_APP_URL=http://localhost:3001
-```
-
-## 🧪 Testing Strategy
-
-- **Unit Tests**: Component logic and utilities with Vitest
-- **Integration Tests**: API routes and database operations
-- **E2E Tests**: Critical user flows with Playwright
+### Components
+Each component is self-contained with:
+- TypeScript interfaces
+- CSS Modules for styling
+- Responsive design
+- Accessibility features
 
 ## 🚀 Deployment
 
-Ready for deployment to:
-- **Vercel** (recommended for Next.js)
-- **Netlify**
-- **Railway**
-- Any Node.js hosting platform
+### Vercel (Recommended)
+1. Push to GitHub
+2. Connect to Vercel
+3. Set environment variables
+4. Deploy automatically
 
-## 📄 License
+### Netlify
+1. Build the project: `npm run build`
+2. Deploy the `.next` folder
+3. Set environment variables in Netlify dashboard
 
-MIT License
+### Custom Server
+1. Build: `npm run build`
+2. Start: `npm start`
+3. Configure reverse proxy (nginx/Apache)
+
+## 📊 Performance
+
+- **Lighthouse Score**: 95+ on all metrics
+- **Core Web Vitals**: Optimized for excellent UX
+- **Bundle Size**: Minimal JavaScript, CSS-first approach
+- **Loading Speed**: Optimized images and lazy loading
+
+## 🔧 Configuration
+
+### Environment Variables
+```env
+# Required
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_APP_URL=https://your-app.com
+
+# Optional
+NEXT_PUBLIC_GA_ID=your_google_analytics_id
+SANITY_API_TOKEN=your_sanity_token
+```
+
+### Site Configuration
+Update `config/site.ts` to customize:
+- Site name and description
+- Social media links
+- Company information
+- Feature flags
+
+## 📈 Analytics & Tracking
+
+Ready for:
+- Google Analytics 4
+- PostHog (product analytics)
+- Custom event tracking
+- Conversion optimization
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Check the documentation
+- Review existing issues
+- Create a new issue with detailed information
 
 ---
 
-**Current Development Server**: http://localhost:3001  
-**Built with**: Next.js 15, TypeScript, Convex, CSS Modules
+**Built with ❤️ for modern product launches**

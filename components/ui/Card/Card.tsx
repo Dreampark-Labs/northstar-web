@@ -1,5 +1,4 @@
 import { type HTMLAttributes, type ReactNode } from 'react';
-import styles from './Card.module.css';
 import { cn } from '@/lib/utils';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -8,7 +7,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 function Card({ className, children, ...props }: CardProps) {
   return (
-    <div className={cn(styles.card, className)} {...props}>
+    <div className={cn('bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-200', className)} {...props} style={{ borderRadius: '24px', border: '1px solid var(--color-border)', ...props.style }}>
       {children}
     </div>
   );
@@ -16,7 +15,7 @@ function Card({ className, children, ...props }: CardProps) {
 
 function CardHeader({ className, children, ...props }: CardProps) {
   return (
-    <div className={cn(styles.header, className)} {...props}>
+    <div className={cn('px-5 py-3', className)} {...props} style={{ borderBottom: '1px solid var(--color-border)', ...props.style }}>
       {children}
     </div>
   );
@@ -24,7 +23,7 @@ function CardHeader({ className, children, ...props }: CardProps) {
 
 function CardContent({ className, children, ...props }: CardProps) {
   return (
-    <div className={cn(styles.content, className)} {...props}>
+    <div className={cn('px-5 py-3', className)} {...props}>
       {children}
     </div>
   );
@@ -32,7 +31,7 @@ function CardContent({ className, children, ...props }: CardProps) {
 
 function CardTitle({ className, children, ...props }: CardProps) {
   return (
-    <h3 className={cn(styles.title, className)} {...props}>
+    <h3 className={cn('text-base font-semibold text-gray-900 dark:text-gray-100', className)} {...props} style={{ paddingLeft: '16px', ...props.style }}>
       {children}
     </h3>
   );

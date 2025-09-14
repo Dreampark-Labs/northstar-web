@@ -1,0 +1,124 @@
+.dropdown {
+  position: relative;
+}
+
+.trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.modal {
+  position: absolute;
+  z-index: 1000;
+  min-width: 280px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: slideIn 0.15s ease-out;
+}
+
+.topLeft {
+  left: 0;
+  bottom: 100%;
+  margin-bottom: 8px;
+  transform: translateY(-8px);
+}
+
+.topRight {
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 8px;
+  transform: translateY(-8px);
+}
+
+.bottomLeft {
+  left: 0;
+  top: 100%;
+  margin-top: 8px;
+  transform: translateY(8px);
+}
+
+.bottomRight {
+  right: 0;
+  top: 100%;
+  margin-top: 8px;
+  transform: translateY(8px);
+}
+
+.menuItems {
+  padding: 8px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  border-left: 2px solid transparent;
+  gap: 12px;
+}
+
+.menuItem:hover,
+.menuItem.selected {
+  background: var(--color-bg);
+  border-left-color: var(--color-accent);
+}
+
+.menuItem.selected {
+  background: var(--color-accent-bg);
+}
+
+.itemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.menuItem.selected .itemIcon {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.itemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fg);
+  line-height: 1.4;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .modal {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+}

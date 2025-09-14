@@ -1,0 +1,66 @@
+.input {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--color-bg-subtle);
+}
+
+.input.error {
+  border-color: var(--color-danger);
+}
+
+.input.error:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+}
+
+/* Variants */
+.input.default {
+  /* Default styling already applied above */
+}
+
+.input.outline {
+  background: transparent;
+  border: 2px solid var(--color-border);
+}
+
+.input.outline:focus {
+  border-color: var(--color-accent);
+  box-shadow: none;
+}
+
+/* Sizes */
+.input.sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-xs);
+}
+
+.input.md {
+  /* Default size already applied above */
+}
+
+.input.lg {
+  padding: var(--spacing-md) var(--spacing-lg);
+  font-size: var(--text-base);
+}
+
+.input::placeholder {
+  color: var(--color-muted);
+}

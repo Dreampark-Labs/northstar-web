@@ -1,0 +1,262 @@
+.container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Allow shrinking */
+  container-type: inline-size;
+}
+
+.scrollContainer {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 8px 4px;
+  
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 2px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-border-hover);
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  min-width: 700px; /* Ensure minimum width for 7 columns */
+  height: 100%;
+}
+
+/* Responsive grid for smaller containers */
+@container (max-width: 600px) {
+  .weekGrid {
+    grid-template-columns: repeat(3, 1fr);
+    min-width: 300px;
+  }
+}
+
+@container (max-width: 400px) {
+  .weekGrid {
+    grid-template-columns: repeat(2, 1fr);
+    min-width: 200px;
+  }
+}
+
+@container (max-width: 300px) {
+  .weekGrid {
+    grid-template-columns: 1fr;
+    min-width: 150px;
+  }
+}
+
+.dayColumn {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 200px;
+  border: 1px solid var(--color-border);
+}
+
+.dayColumn.today {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary-alpha);
+}
+
+.dayHeader {
+  padding: 8px 12px;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.dayColumn.today .dayHeader {
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary);
+}
+
+.dayName {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  margin-bottom: 2px;
+}
+
+.dayColumn.today .dayName {
+  color: var(--color-primary);
+}
+
+.dayNumber {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg);
+}
+
+.dayColumn.today .dayNumber {
+  color: var(--color-primary);
+}
+
+.dayAssignments {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+
+.noDueText {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 16px 8px;
+  font-style: italic;
+}
+
+.assignmentItem {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.assignmentItem:hover {
+  background-color: var(--color-bg-hover);
+  border-left-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+.assignmentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+.assignmentTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-fg);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assignmentMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.courseInfo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+.courseCode {
+  font-weight: 600;
+  color: var(--color-fg-muted);
+}
+
+.dueTime {
+  font-size: 10px;
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+/* Urgency indicators */
+.assignmentItem.urgent {
+  border-left-color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+}
+
+.assignmentItem.urgent .dueTime {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.assignmentItem.warning {
+  border-left-color: var(--color-warning);
+  background-color: var(--color-warning-bg);
+}
+
+.assignmentItem.warning .dueTime {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+/* Empty state styles removed - now using shared EmptyState component */
+
+/* Responsive adjustments for smaller cards */
+@container (max-width: 250px) {
+  .weekGrid {
+    gap: 4px;
+  }
+  
+  .dayColumn {
+    min-height: 150px;
+  }
+  
+  .dayHeader {
+    padding: 6px 8px;
+  }
+  
+  .dayAssignments {
+    padding: 6px;
+    gap: 4px;
+  }
+  
+  .assignmentItem {
+    padding: 6px;
+  }
+  
+  .assignmentTitle {
+    font-size: 11px;
+  }
+  
+  .courseInfo,
+  .dueTime {
+    font-size: 9px;
+  }
+}

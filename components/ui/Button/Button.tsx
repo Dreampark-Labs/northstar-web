@@ -1,18 +1,35 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
-import styles from './Button.module.css';
 import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', children, ...props }, ref) => {
+    const variantClasses = {
+      primary: 'btn-primary',
+      secondary: 'btn-secondary',
+      ghost: 'btn-ghost',
+      outline: 'btn-outline'
+    };
+
+    const sizeClasses = {
+      sm: 'btn-sm',
+      md: 'btn-md',
+      lg: 'btn-lg'
+    };
+
     return (
       <button
-        className={cn(styles.button, styles[variant], styles[size], className)}
+        className={cn(
+          'btn',
+          variantClasses[variant],
+          sizeClasses[size],
+          className
+        )}
         ref={ref}
         {...props}
       >

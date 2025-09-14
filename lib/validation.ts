@@ -12,7 +12,12 @@ export const courseSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title too long"),
   code: z.string().min(1, "Code is required").max(20, "Code too long"),
   creditHours: z.number().min(1).max(10),
-  instructor: z.string().max(100, "Instructor name too long").optional(),
+  instructor: z.string().min(1, "Instructor is required").max(100, "Instructor name too long"),
+  meetingDays: z.array(z.enum(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])).optional(),
+  meetingStart: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)").optional(),
+  meetingEnd: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)").optional(),
+  building: z.string().max(100, "Building name too long").optional(),
+  room: z.string().max(50, "Room number too long").optional(),
 });
 
 export const assignmentSchema = z.object({

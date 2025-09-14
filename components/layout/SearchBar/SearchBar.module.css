@@ -1,0 +1,86 @@
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.searchButton {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  height: 32px;
+  width: 100%;
+}
+
+.searchButton:hover .searchWrapper {
+  border-color: var(--color-accent);
+  background: var(--color-card);
+}
+
+.searchIcon {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.searchPlaceholder {
+  flex: 1;
+  text-align: left;
+  color: var(--color-muted);
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.shortcutHint {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 6px;
+  background: var(--color-border);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.shortcutHint span {
+  font-family: monospace;
+}
+
+.collapsedSearch {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+}
+
+.collapsedSearch:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Removed unused styles for inline results */

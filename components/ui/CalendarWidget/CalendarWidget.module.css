@@ -1,0 +1,211 @@
+/* Calendar Widget Styles */
+.widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Empty state styles removed - now using shared EmptyState component */
+
+/* Event List (Today View) */
+.eventList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  overflow-y: auto;
+}
+
+.eventItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.eventItem:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border);
+  transform: translateY(-1px);
+}
+
+.eventIcon {
+  color: var(--event-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--event-color) 15%, transparent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.eventContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-fg);
+  margin-bottom: 2px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.eventCourse {
+  font-size: var(--font-size-xs);
+  color: var(--event-color);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.eventTime {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eventLocation {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+/* Grouped Events (Week/Upcoming View) */
+.groupedEvents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-sm);
+  overflow-y: auto;
+}
+
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.dayHeader {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Compact Event Style */
+.eventItem.compact {
+  padding: var(--space-xs) var(--space-sm);
+  gap: var(--space-sm);
+}
+
+.eventIndicator {
+  width: 3px;
+  height: 100%;
+  background: var(--event-color);
+  border-radius: 2px;
+  flex-shrink: 0;
+  min-height: 20px;
+}
+
+.eventMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.eventMeta .eventCourse {
+  color: var(--event-color);
+  font-weight: 500;
+}
+
+.eventMeta .eventTime {
+  color: var(--color-muted);
+}
+
+/* Event Type Styles */
+.event-class {
+  --event-color: #3b82f6;
+}
+
+.event-assignment {
+  --event-color: #f59e0b;
+}
+
+.event-exam {
+  --event-color: #ef4444;
+}
+
+.event-office-hours {
+  --event-color: #10b981;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .eventList,
+  .groupedEvents {
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
+
+  .eventItem {
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
+
+  .eventIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .eventTitle {
+    font-size: 13px;
+  }
+
+  .eventCourse,
+  .eventTime,
+  .eventLocation {
+    font-size: 11px;
+  }
+
+  .dayHeader {
+    font-size: 11px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .eventIcon {
+    background: color-mix(in srgb, var(--event-color) 20%, transparent);
+  }
+}

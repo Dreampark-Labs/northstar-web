@@ -1,0 +1,1019 @@
+/* Notion Calendar Styles */
+.notionCalendar {
+  display: flex;
+  height: 100vh;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+/* Left Sidebar */
+.sidebar {
+  width: 280px;
+  background: #f7f7f7;
+  border-right: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 20px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.addButton {
+  height: 36px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 16px;
+  margin-right: 16px;
+}
+
+.addButton:hover {
+  background: #2563eb;
+}
+
+/* Mini Calendar */
+.miniCalendarSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.miniCalendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.miniCalendarHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.miniCalendarHeader button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.miniCalendarHeader button:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.miniCalendarGrid {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.miniCalendarDayHeaders {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.miniCalendarDayHeader {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  padding: 4px;
+}
+
+.miniCalendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.miniCalendarDay {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.miniCalendarDay:hover {
+  background: #f3f4f6;
+}
+
+.miniCalendarDay.today {
+  background: #ef4444;
+  color: white;
+  font-weight: 600;
+}
+
+.miniCalendarDay.selected {
+  background: #3b82f6;
+  color: white;
+  font-weight: 600;
+}
+
+.miniCalendarEmpty {
+  width: 28px;
+  height: 28px;
+}
+
+/* Calendar List */
+.calendarList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+/* Custom scrollbar for calendar list */
+.calendarList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.calendarList::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.calendarList::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.calendarList::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.calendarListHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 8px 4px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 8px;
+}
+
+.calendarItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.calendarItem:hover {
+  background: #f9fafb;
+}
+
+.personalCalendar {
+  border: 2px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.courseItem {
+  margin-left: 20px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 4px;
+  padding: 6px 10px;
+}
+
+.calendarCheckbox {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.calendarCheckbox:checked {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.calendarColor {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendarName {
+  flex: 1;
+  font-weight: 500;
+}
+
+.calendarStatus {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.termHeader {
+  padding: 8px 8px 6px 8px;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e5e5e5;
+  flex-shrink: 0;
+}
+
+.termHeaderButton {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s ease;
+  border-radius: 4px;
+  padding: 4px 0;
+}
+
+.termHeaderButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.termChevron {
+  transition: transform 0.15s ease;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.termChevron.expanded {
+  transform: rotate(90deg);
+}
+
+.termHeader:first-of-type {
+  margin-top: 4px;
+}
+
+.termName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Main Calendar */
+.mainCalendar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.viewSwitcher {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.viewButton {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.viewButton.active {
+  background: #ffffff;
+  color: #1f2937;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.todayButton {
+  padding: 6px 12px;
+  border: 1px solid #e5e5e5;
+  background: #ffffff;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.todayButton:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.dateNavigation {
+  display: flex;
+  gap: 4px;
+}
+
+.dateNavigation button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.dateNavigation button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.headerRight svg {
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.headerRight svg:hover {
+  color: #374151;
+}
+
+/* Big Calendar Container */
+.bigCalendarContainer {
+  flex: 1;
+  padding: 0 24px 24px 24px;
+  overflow: hidden;
+}
+
+.bigCalendar {
+  height: 100%;
+}
+
+/* Override React Big Calendar styles */
+.bigCalendar :global(.rbc-calendar) {
+  height: 100%;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+}
+
+.bigCalendar :global(.rbc-header) {
+  background: transparent;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 6px 8px;
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bigCalendar :global(.rbc-header + .rbc-header) {
+  border-left: 1px solid #e5e5e5;
+}
+
+.bigCalendar :global(.rbc-time-view) {
+  border: none;
+  background: transparent;
+}
+
+.bigCalendar :global(.rbc-time-header) {
+  border-bottom: 1px solid #e5e5e5;
+  background: transparent;
+  padding: 0;
+  min-height: 40px;
+}
+
+.bigCalendar :global(.rbc-time-content) {
+  background: transparent;
+  border: none;
+}
+
+.bigCalendar :global(.rbc-time-gutter) {
+  background: transparent;
+  border-right: 1px solid #e5e5e5;
+  width: 60px;
+}
+
+.bigCalendar :global(.rbc-time-slot) {
+  border-top: 1px solid #f3f4f6;
+  min-height: 80px;
+}
+
+.bigCalendar :global(.rbc-timeslot-group) {
+  border-bottom: 1px solid #e5e5e5;
+  min-height: 80px;
+}
+
+.bigCalendar :global(.rbc-day-slot) {
+  border-left: 1px solid #e5e5e5;
+  background: transparent;
+}
+
+.bigCalendar :global(.rbc-day-slot:first-child) {
+  border-left: none;
+}
+
+.bigCalendar :global(.rbc-label) {
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 4px 8px;
+  text-align: right;
+}
+
+.bigCalendar :global(.rbc-current-time-indicator) {
+  background: #ef4444;
+  height: 2px;
+  z-index: 10;
+}
+
+/* Event Styles */
+.notionEvent {
+  width: 100%;
+  height: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 24px;
+  border-left: 4px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: all 0.15s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.notionEvent:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.notionEvent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+  pointer-events: none;
+}
+
+.notionEvent .eventTitle {
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: visible;
+  word-wrap: break-word;
+  font-size: 13px;
+  position: relative;
+  z-index: 1;
+}
+
+.notionEvent .eventCourse {
+  font-size: 11px;
+  opacity: 0.85;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.notionEvent .eventTime {
+  font-size: 10px;
+  opacity: 0.8;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+.notionEvent .eventLocation {
+  font-size: 9px;
+  opacity: 0.75;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.notionEvent .eventMeetingInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.notionEvent .eventAvatars {
+  display: flex;
+  gap: 2px;
+}
+
+.notionEvent .eventAvatar {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.notionEvent .meetingIndicator {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+}
+
+/* Event Type Specific Styles */
+.notionEvent[data-event-type="meeting"] {
+  border-left-color: rgba(255, 255, 255, 0.6);
+}
+
+.notionEvent[data-event-type="meeting"]::before {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+}
+
+.notionEvent[data-event-type="class"] {
+  border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+.notionEvent[data-event-type="assignment"] {
+  border-left-color: rgba(255, 255, 255, 0.7);
+  border-left-width: 5px;
+}
+
+.notionEvent[data-event-type="exam"] {
+  border-left-color: rgba(255, 255, 255, 0.8);
+  border-left-width: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.bigCalendar :global(.rbc-event) {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 2px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: translateY(-15px) !important;
+}
+
+.bigCalendar :global(.rbc-event:focus) {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.bigCalendar :global(.rbc-event.rbc-selected) {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.bigCalendar :global(.rbc-event-content) {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Force events to align closer to the top of their time slots */
+.bigCalendar :global(.rbc-time-content) .rbc-event {
+  top: -15px !important;
+  position: relative !important;
+}
+
+/* Additional override for better event positioning */
+.bigCalendar :global(.rbc-events-container) {
+  margin-top: -15px !important;
+}
+
+.bigCalendar :global(.rbc-addons-dnd-drag-preview) {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Additional overrides to remove any default borders */
+.bigCalendar :global(.rbc-event-allday) {
+  border: none !important;
+  outline: none !important;
+}
+
+.bigCalendar :global(.rbc-event-continues-prior) {
+  border: none !important;
+  outline: none !important;
+}
+
+.bigCalendar :global(.rbc-event-continues-after) {
+  border: none !important;
+  outline: none !important;
+}
+
+.bigCalendar :global(.rbc-show-more) {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Event Sidebar */
+.eventSidebar {
+  width: 320px;
+  background: #ffffff;
+  border-left: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.eventSidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.eventSidebarHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editButton,
+.closeButton {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.15s ease;
+}
+
+.editButton:hover,
+.closeButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.editButton:hover {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.eventDetails {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventDetails .eventTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.eventMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.eventTime,
+.eventLocation,
+.eventMeeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.eventTime svg,
+.eventLocation svg,
+.eventMeeting svg {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.eventMeeting a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.eventMeeting a:hover {
+  text-decoration: underline;
+}
+
+.eventAttendees {
+  margin-top: 8px;
+}
+
+.eventAttendees h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.attendeesList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attendee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.attendeeAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+/* Edit Form Styles */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formField label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.formInput,
+.formSelect {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #1f2937;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.errorMessage {
+  padding: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.saveButton {
+  flex: 1;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.15s ease;
+}
+
+.saveButton:hover {
+  background: #2563eb;
+}
+
+.cancelButton {
+  padding: 10px 16px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelButton:hover {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 240px;
+  }
+  
+  .eventSidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .notionCalendar {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .miniCalendarSection {
+    min-width: 200px;
+  }
+  
+  .eventSidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 50;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .notionCalendar {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+  
+  .sidebar {
+    background: #111827;
+    border-color: #374151;
+  }
+  
+  .searchBox,
+  .miniCalendarGrid,
+  .calendarItem {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+  
+  .mainCalendar {
+    background: #1f2937;
+  }
+  
+  .calendarHeader {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .eventSidebar {
+    background: #1f2937;
+    border-color: #374151;
+  }
+}
