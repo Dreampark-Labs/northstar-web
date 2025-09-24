@@ -43,7 +43,7 @@ export function Footer({ appSettings: propsAppSettings, footerSettings: propsFoo
           <div className={styles.section}>
             <h3 className={styles.title}>{appSettings.appName}</h3>
             <p className={styles.description}>
-              {footerSettings.appDescription}
+              {appSettings.appDescription}
             </p>
             {footerSettings.version && (
               <p className={styles.version}>

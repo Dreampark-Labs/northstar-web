@@ -1,5 +1,5 @@
-import type { QueryCtx, MutationCtx } from "./_generated/server";
-import type { Id } from "./_generated/dataModel";
+import type { QueryCtx, MutationCtx } from "../_generated/server";
+import type { Id } from "../_generated/dataModel";
 
 // Helper function to get or create user from external auth
 export async function getOrCreateUser(
@@ -49,5 +49,5 @@ export async function getOrCreateUser(
     }
   }
 
-  return user;
+  return user as any;
 }

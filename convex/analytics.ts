@@ -198,16 +198,16 @@ export const getUpcomingDeadlines = query({
 async function calculateActiveCourses(ctx: any, userId: string) {
   const currentTerms = await ctx.db
     .query("terms")
-    .withIndex("by_user_status", (q) => q.eq("userId", userId).eq("status", "current"))
-    .filter(q => q.eq(q.field("softDeletedAt"), undefined))
+    .withIndex("by_user_status", (q: any) => q.eq("userId", userId).eq("status", "current"))
+    .filter((q: any) => q.eq(q.field("softDeletedAt"), undefined))
     .collect();
   
   const activeCourses = await Promise.all(
-    currentTerms.map(term => 
+    currentTerms.map((term: any) => 
       ctx.db
         .query("courses")
-        .withIndex("by_user_term", (q) => q.eq("userId", userId).eq("termId", term._id))
-        .filter(q => q.eq(q.field("softDeletedAt"), undefined))
+        .withIndex("by_user_term", (q: any) => q.eq("userId", userId).eq("termId", term._id))
+        .filter((q: any) => q.eq(q.field("softDeletedAt"), undefined))
         .collect()
     )
   ).then(courseArrays => courseArrays.flat());
@@ -221,11 +221,11 @@ async function calculateOverdueAssignments(ctx: any, userId: string) {
   
   const overdueAssignments = await ctx.db
     .query("assignments")
-    .withIndex("by_user_due", (q) => 
+    .withIndex("by_user_due", (q: any) => 
       q.eq("userId", userId)
        .lt("dueAt", now)
     )
-    .filter(q => q.and(
+    .filter((q: any) => q.and(
       q.eq(q.field("softDeletedAt"), undefined),
       q.eq(q.field("status"), "todo")
     ))

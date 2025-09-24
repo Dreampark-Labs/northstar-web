@@ -1,17 +1,11 @@
 import { useState, useEffect } from 'react';
-import { client } from '@/lib/sanity';
-
-interface AppSettings {
-  siteName?: string;
-  siteDescription?: string;
-  logoLight?: any;
-  logoDark?: any;
-  primaryColor?: string;
-  secondaryColor?: string;
-}
+import { client, AppSettings, FooterSettings } from '@/lib/sanity';
 
 export function useAppSettings() {
-  const [appSettings, setAppSettings] = useState<AppSettings>({});
+  const [appSettings, setAppSettings] = useState<AppSettings>({
+    appName: 'Northstar',
+    appDescription: 'Academic Planning Platform'
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,20 +19,21 @@ export function useAppSettings() {
         
         const fetchPromise = client.fetch(`
           *[_type == "appSettings"][0] {
-            siteName,
-            siteDescription,
-            logoLight,
-            logoDark,
-            primaryColor,
-            secondaryColor
+            appName,
+            appDescription,
+            metaKeywords,
+            metaTitle,
+            favicon,
+            appleTouchIcon,
+            isActive
           }
         `);
         
         const settings = await Promise.race([fetchPromise, timeoutPromise]);
         
         setAppSettings(settings || {
-          siteName: 'Northstar',
-          siteDescription: 'Academic Planning Platform'
+          appName: 'Northstar',
+          appDescription: 'Academic Planning Platform'
         });
         setError(null);
       } catch (err) {
@@ -46,8 +41,8 @@ export function useAppSettings() {
         setError('Failed to load settings');
         // Set defaults on error - don't let this break the app
         setAppSettings({
-          siteName: 'Northstar',
-          siteDescription: 'Academic Planning Platform'
+          appName: 'Northstar',
+          appDescription: 'Academic Planning Platform'
         });
       } finally {
         setLoading(false);
@@ -58,8 +53,8 @@ export function useAppSettings() {
     fetchSettings().catch((err) => {
       console.warn('App settings fetch failed completely:', err);
       setAppSettings({
-        siteName: 'Northstar',
-        siteDescription: 'Academic Planning Platform'
+        appName: 'Northstar',
+        appDescription: 'Academic Planning Platform'
       });
       setLoading(false);
     });
@@ -68,11 +63,6 @@ export function useAppSettings() {
   return { appSettings, loading, error };
 }
 
-interface FooterSettings {
-  companyName?: string;
-  year?: number;
-  links?: any[];
-}
 
 export function useFooterSettings() {
   const [footerSettings, setFooterSettings] = useState<FooterSettings>({});
@@ -90,8 +80,12 @@ export function useFooterSettings() {
         const fetchPromise = client.fetch(`
           *[_type == "footerSettings"][0] {
             companyName,
-            year,
-            links
+            version,
+            supportEmail,
+            privacyEmail,
+            showSecurityBadge,
+            socialLinks,
+            legalLinks
           }
         `);
         
@@ -99,7 +93,7 @@ export function useFooterSettings() {
         
         setFooterSettings(settings || {
           companyName: 'Northstar',
-          year: new Date().getFullYear()
+          version: '1.0.0'
         });
         setError(null);
       } catch (err) {
@@ -108,7 +102,7 @@ export function useFooterSettings() {
         // Set defaults on error - don't let this break the app
         setFooterSettings({
           companyName: 'Northstar',
-          year: new Date().getFullYear()
+          version: '1.0.0'
         });
       } finally {
         setLoading(false);
@@ -120,7 +114,7 @@ export function useFooterSettings() {
       console.warn('Footer settings fetch failed completely:', err);
       setFooterSettings({
         companyName: 'Northstar',
-        year: new Date().getFullYear()
+        version: '1.0.0'
       });
       setLoading(false);
     });

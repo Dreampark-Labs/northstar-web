@@ -13,26 +13,24 @@ export const getUserSettings = query({
 
     if (!user) return null;
 
-    let settings = await ctx.db
+    const settings = await ctx.db
       .query("userSettings")
       .withIndex("by_user", (q) => q.eq("userId", user._id))
       .first();
 
-    // If no settings exist, create default ones
+    // Return default settings if none exist
     if (!settings) {
-      const settingsId = await ctx.db.insert("userSettings", {
+      return {
         userId: user._id,
-        weekStartDay: "Sunday",
-        theme: "system",
-        dateFormat: "MM/DD/YYYY",
-        timeFormat: "12h",
+        weekStartDay: "Sunday" as const,
+        theme: "system" as const,
+        dateFormat: "MM/DD/YYYY" as const,
+        timeFormat: "12h" as const,
         emailNotifications: true,
         dueSoonDays: 7,
         createdAt: Date.now(),
         updatedAt: Date.now(),
-      });
-
-      settings = await ctx.db.get(settingsId);
+      };
     }
 
     return settings;

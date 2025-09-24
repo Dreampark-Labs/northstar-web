@@ -12,14 +12,14 @@ async function getOrCreateUser(ctx: any) {
     // Try to find user by external auth subject
     user = await ctx.db
       .query("users")
-      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", identity.subject))
+      .withIndex("by_clerkUserId", (q: any) => q.eq("clerkUserId", identity.subject))
       .first();
 
     // If not found by clerkUserId, try by clerkId for backward compatibility
     if (!user) {
       user = await ctx.db
         .query("users")
-        .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", identity.subject))
+        .withIndex("by_clerkUserId", (q: any) => q.eq("clerkUserId", identity.subject))
         .first();
     }
 
@@ -47,11 +47,29 @@ export const create = mutation({
     const user = await getOrCreateUser(ctx);
     if (!user) throw new Error("Unauthorized");
 
-    return await ctx.db.insert("terms", {
+    // Enforce unique name per user
+    const existingWithName = await ctx.db
+      .query("terms")
+      .withIndex("by_user_name", (q: any) => q.eq("userId", user._id).eq("lc_name", args.name.toLowerCase()))
+      .first();
+    if (existingWithName) {
+      throw new Error("A term with this name already exists");
+    }
+
+    const newId = await ctx.db.insert("terms", {
       userId: user._id,
       lc_name: args.name.toLowerCase(),
       ...args,
     });
+
+    // If this is created as current, set currentActiveTerm on user
+    if (args.status === "current") {
+      await ctx.db.patch(user._id, { currentActiveTerm: String(newId), totalTermsCreated: (user.totalTermsCreated || 0) + 1, updatedAt: Date.now() });
+    } else {
+      await ctx.db.patch(user._id, { totalTermsCreated: (user.totalTermsCreated || 0) + 1, updatedAt: Date.now() });
+    }
+
+    return newId;
   },
 });
 
@@ -78,9 +96,18 @@ export const update = mutation({
       throw new Error("Unauthorized");
     }
 
-    const patchData = { ...updateData };
+    const patchData: any = { ...updateData };
     if (updateData.name) {
       patchData.lc_name = updateData.name.toLowerCase();
+
+      // Enforce unique name per user on update
+      const dup = await ctx.db
+        .query("terms")
+        .withIndex("by_user_name", (q) => q.eq("userId", user._id).eq("lc_name", updateData.name.toLowerCase()))
+        .first();
+      if (dup && dup._id !== id) {
+        throw new Error("A term with this name already exists");
+      }
     }
 
     // Check if status is changing (affects active courses)

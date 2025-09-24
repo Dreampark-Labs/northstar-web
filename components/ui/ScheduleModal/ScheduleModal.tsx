@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
 import { X, Calendar } from 'lucide-react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -9,9 +8,14 @@ import { NotionCalendar, type Term, type Course } from '@/components/ui/NotionCa
 import { type CalendarEvent } from '@/components/ui/Calendar';
 import { getCourseColor, generateRecurringEvents } from '@/lib/calendar';
 import { type ScheduleModalProps } from './ScheduleModal.types';
+import { useSafePortal, useSafeBodyStyle } from '@/hooks/useSafePortal';
 import styles from './ScheduleModal.module.css';
 
 export function ScheduleModal({ isOpen, onClose, className }: ScheduleModalProps) {
+  // Use safe portal and body style hooks
+  const { createSafePortal } = useSafePortal();
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
+
   // Close modal on Escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -22,13 +26,10 @@ export function ScheduleModal({ isOpen, onClose, className }: ScheduleModalProps
 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      // Prevent body scrolling when modal is open
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 
@@ -50,11 +51,11 @@ export function ScheduleModal({ isOpen, onClose, className }: ScheduleModalProps
     }
 
     // Convert database terms and associate courses
-    return dbTerms.map(term => {
+    return dbTerms.map((term: any) => {
       // Find courses for this term
       const termCourses = dbCourses
-        .filter(course => course.termId === term._id)
-        .map(course => ({
+        .filter((course: any) => course.termId === term._id)
+        .map((course: any) => ({
           id: course._id,
           name: course.title,
           code: course.code,
@@ -81,9 +82,9 @@ export function ScheduleModal({ isOpen, onClose, className }: ScheduleModalProps
     
     const events: CalendarEvent[] = [];
     
-    dbCourses.forEach(course => {
+    dbCourses.forEach((course: any) => {
       // Find the term for this course
-      const term = dbTerms.find(t => t._id === course.termId);
+      const term = dbTerms.find((t: any) => t._id === course.termId);
       if (!term) {
         return;
       }
@@ -179,8 +180,10 @@ export function ScheduleModal({ isOpen, onClose, className }: ScheduleModalProps
     </div>
   );
 
-  // Render modal using portal to document.body
-  return typeof window !== 'undefined' ? createPortal(modalContent, document.body) : null;
+  // Render modal using portal to document.body with safety checks
+  if (!isOpen) return null;
+  
+  return createSafePortal(modalContent);
 }
 
 export default ScheduleModal;

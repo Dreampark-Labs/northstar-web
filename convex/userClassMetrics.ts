@@ -1,4 +1,5 @@
 import { mutation, query } from "./_generated/server";
+import { api } from "./_generated/api";
 import { v } from "convex/values";
 
 // Helper function to get period boundaries
@@ -464,7 +465,7 @@ export const getMetrics = query({
       ));
     }
 
-    query = query.order("desc"); // Most recent first
+    query = (query as any).order("desc"); // Most recent first
 
     if (args.limit) {
       return await query.take(args.limit);
@@ -480,7 +481,7 @@ export const calculateAllMetrics = mutation({
     userId: v.optional(v.id("users")),
     weekStartDay: v.optional(v.string()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<any> => {
     const identity = await ctx.auth.getUserIdentity();
     
     if (!identity) throw new Error("Authentication required");
@@ -509,7 +510,7 @@ export const calculateAllMetrics = mutation({
     // Calculate overall metrics (across all courses)
     for (const periodType of periodTypes) {
       try {
-        const result = await calculateMetrics(ctx, {
+        const result: any = await ctx.runMutation(api.userClassMetrics.calculateMetrics, {
           userId,
           periodType,
           referenceDate: now,
@@ -525,7 +526,7 @@ export const calculateAllMetrics = mutation({
     for (const course of courses) {
       for (const periodType of periodTypes) {
         try {
-          const result = await calculateMetrics(ctx, {
+          const result: any = await ctx.runMutation(api.userClassMetrics.calculateMetrics, {
             userId,
             courseId: course._id,
             termId: course.termId,
@@ -613,19 +614,21 @@ export const getSummaryStats = query({
     let periodsWithGrades = 0;
 
     for (const metric of allMetrics) {
-      summary.totalAssignments += metric.totalAssignments;
-      summary.totalCompletedAssignments += metric.completedAssignments;
-      summary.totalGradedAssignments += metric.gradedAssignments;
+      summary.totalAssignments += metric.totalAssignments || 0;
+      summary.totalCompletedAssignments += metric.completedAssignments || 0;
+      summary.totalGradedAssignments += metric.gradedAssignments || 0;
       
-      summary.gradeDistribution.gradesA += metric.gradesA;
-      summary.gradeDistribution.gradesB += metric.gradesB;
-      summary.gradeDistribution.gradesC += metric.gradesC;
-      summary.gradeDistribution.gradesD += metric.gradesD;
-      summary.gradeDistribution.gradesF += metric.gradesF;
+      summary.gradeDistribution.gradesA += metric.gradesA || 0;
+      summary.gradeDistribution.gradesB += metric.gradesB || 0;
+      summary.gradeDistribution.gradesC += metric.gradesC || 0;
+      summary.gradeDistribution.gradesD += metric.gradesD || 0;
+      summary.gradeDistribution.gradesF += metric.gradesF || 0;
 
       // Track period types
-      summary.periodTypeBreakdown[metric.periodType] = 
-        (summary.periodTypeBreakdown[metric.periodType] || 0) + 1;
+      if (metric.periodType) {
+        summary.periodTypeBreakdown[metric.periodType] = 
+          (summary.periodTypeBreakdown[metric.periodType] || 0) + 1;
+      }
 
       if (metric.averageGrade !== undefined) {
         totalGradeSum += metric.averageGrade;
@@ -929,8 +932,6 @@ export const getUserChangeHistory = query({
       query = query.filter(q => q.eq(q.field("changeType"), args.changeType));
     }
 
-    query = query.order("desc");
-
     if (args.limit) {
       return await query.take(args.limit);
     }
@@ -975,7 +976,7 @@ export const completeTerm = mutation({
     }
 
     // Calculate GPA for this specific term
-    const termGPA = await calculateUserGPA(ctx, { userId, termId: args.termId });
+    const termGPA: any = await ctx.runMutation(api.userClassMetrics.calculateUserGPA, { userId, termId: args.termId });
     
     // Get courses for this term to calculate credit hours
     const courses = await ctx.db
@@ -1007,9 +1008,9 @@ export const completeTerm = mutation({
       updatedAt: Date.now(),
     });
 
-    // Mark the term as completed
+    // Mark the term as past (completed)
     await ctx.db.patch(args.termId, {
-      status: "completed" as const,
+      status: "past" as const,
     });
 
     // Log the term completion
@@ -1135,8 +1136,6 @@ export const getGPAHistory = query({
     if (args.termId) {
       query = query.filter(q => q.eq(q.field("termId"), args.termId));
     }
-
-    query = query.order("desc");
 
     if (args.limit) {
       return await query.take(args.limit);

@@ -74,10 +74,12 @@ export class TermSlugValidator {
   }
 
   /**
-   * Generate a unique ID for cases where we need one
+   * Generate a deterministic ID for cases where we need one
+   * This ensures server and client generate the same slug
    */
   private static generateUniqueId(): string {
-    return Math.random().toString(36).substr(2, 9);
+    // Use a fixed ID for "All Terms" to prevent hydration mismatches
+    return 'u5urh3fps';
   }
 
   /**

@@ -32,7 +32,7 @@ export function DueThisWeek({
   // Create a map of course IDs to course info for quick lookup
   const courseMap = React.useMemo(() => {
     if (!courses) return {};
-    return courses.reduce((map, course) => {
+    return courses.reduce((map: any, course: any) => {
       map[course._id] = course;
       return map;
     }, {} as Record<string, any>);
@@ -43,11 +43,11 @@ export function DueThisWeek({
     if (!assignments) return [];
     
     return assignments
-      .map(assignment => ({
+      .map((assignment: any) => ({
         ...assignment,
         course: courseMap[assignment.courseId]
       }))
-      .filter(assignment => assignment.course) // Only include assignments with valid courses
+      .filter((assignment: any) => assignment.course) // Only include assignments with valid courses
       .slice(0, maxItems);
   }, [assignments, courseMap, maxItems]);
 
@@ -78,7 +78,7 @@ export function DueThisWeek({
         dayName: day.toLocaleDateString('en-US', { weekday: 'short' }),
         dayNumber: day.getDate(),
         isToday: day.toDateString() === now.toDateString(),
-        assignments: enrichedAssignments.filter(assignment => {
+        assignments: enrichedAssignments.filter((assignment: any) => {
           const assignmentDate = new Date(assignment.dueAt);
           return assignmentDate.toDateString() === day.toDateString();
         })
@@ -147,7 +147,7 @@ export function DueThisWeek({
                 {day.assignments.length === 0 ? (
                   <div className={styles.noDueText}>No assignments</div>
                 ) : (
-                  day.assignments.map((assignment) => (
+                  day.assignments.map((assignment: any) => (
                     <div
                       key={assignment._id}
                       className={`${styles.assignmentItem} ${getUrgencyClass(assignment.dueAt)}`}

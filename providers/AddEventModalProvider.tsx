@@ -16,11 +16,21 @@ export function AddEventModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [initialDate, setInitialDate] = useState<Date | undefined>();
   const [initialHour, setInitialHour] = useState<number | undefined>();
-  const searchParams = useSearchParams();
+  
+  // Safely get search params - this will be null during static generation
+  let searchParams: URLSearchParams | null = null;
+  try {
+    searchParams = useSearchParams();
+  } catch (error) {
+    // During static generation, useSearchParams will throw
+    // We'll handle this gracefully
+  }
 
   // Monitor URL changes to close modal when addEvent parameter is removed
   // This matches the EventDetailsModal pattern
   useEffect(() => {
+    if (!searchParams) return; // Skip during static generation
+    
     const hasAddEvent = searchParams.get('addEvent') !== null;
     if (!hasAddEvent && isOpen) {
       // Close modal if no addEvent parameter in URL but modal is open

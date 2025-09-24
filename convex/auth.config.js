@@ -1,8 +1,12 @@
-  export default {
-    providers: [
+export default {
+  providers: [
     {
-      "domain": "http://localhost:3002",
-      "applicationID": "external-auth"
-    }
+      domain: "https://clerk.dev",
+      applicationID: "convex",
+    },
+    {
+      domain: "https://fancy-terrapin-0.clerk.accounts.dev",
+      applicationID: "convex",
+    },
   ],
-  };
+};

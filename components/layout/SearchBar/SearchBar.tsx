@@ -10,7 +10,16 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ isCollapsed, onFocus }: SearchBarProps) {
-  const { open } = useCommandPaletteContext();
+  // Safely get the command palette context - it might not be available during static generation
+  let commandPaletteContext;
+  try {
+    commandPaletteContext = useCommandPaletteContext();
+  } catch (error) {
+    // During static generation, the context might not be available
+    commandPaletteContext = { open: () => {} };
+  }
+  
+  const { open } = commandPaletteContext;
 
   const handleClick = () => {
     onFocus?.();

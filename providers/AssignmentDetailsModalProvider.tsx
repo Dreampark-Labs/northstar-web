@@ -30,10 +30,20 @@ export function AssignmentDetailsModalProvider({ children }: AssignmentDetailsMo
   const [isOpen, setIsOpen] = useState(false);
   const [assignmentId, setAssignmentId] = useState<Id<"assignments"> | undefined>(undefined);
   const router = useRouter();
-  const searchParams = useSearchParams();
+  
+  // Safely get search params - this will be null during static generation
+  let searchParams: URLSearchParams | null = null;
+  try {
+    searchParams = useSearchParams();
+  } catch (error) {
+    // During static generation, useSearchParams will throw
+    // We'll handle this gracefully
+  }
 
   // Handle URL parameters for assignment details modal
   useEffect(() => {
+    if (!searchParams) return; // Skip during static generation
+    
     const assignmentParam = searchParams.get('assignment');
     
     if (assignmentParam && assignmentParam !== 'add' && assignmentParam !== 'true') {

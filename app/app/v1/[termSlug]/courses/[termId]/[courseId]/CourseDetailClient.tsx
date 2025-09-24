@@ -86,8 +86,8 @@ export function CourseDetailClient({ termId, courseId }: CourseDetailClientProps
     let completed = 0;
     let overdue = 0;
     
-    assignments.forEach(assignment => {
-      if (assignment.status === 'completed') {
+    assignments.forEach((assignment: any) => {
+      if (assignment.status === 'done') {
         completed++;
       } else if (assignment.dueAt && assignment.dueAt < now) {
         overdue++;
@@ -219,13 +219,13 @@ export function CourseDetailClient({ termId, courseId }: CourseDetailClientProps
                   </div>
                 )}
                 
-                {course.location && (
+                {(course.building || course.room) && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <MapPin size={16} style={{ color: 'var(--color-accent)' }} />
                     <div>
                       <div style={{ fontWeight: '500', fontSize: '14px' }}>Location</div>
                       <div style={{ fontSize: '13px', color: 'var(--color-muted)' }}>
-                        {course.location}
+                        {[course.building, course.room].filter(Boolean).join(', ')}
                       </div>
                     </div>
                   </div>
@@ -329,7 +329,7 @@ export function CourseDetailClient({ termId, courseId }: CourseDetailClientProps
             </CardHeader>
             <CardContent style={{ padding: 0 }}>
               <div style={{ maxHeight: '400px', overflow: 'auto' }}>
-                {assignments.slice(0, 10).map((assignment) => (
+                {assignments.slice(0, 10).map((assignment: any) => (
                   <div
                     key={assignment._id}
                     style={{
@@ -341,12 +341,12 @@ export function CourseDetailClient({ termId, courseId }: CourseDetailClientProps
                     }}
                   >
                     <div style={{ 
-                      color: assignment.status === 'completed' ? 'var(--color-success, #10b981)' : 'var(--color-accent)',
+                      color: assignment.status === 'done' ? 'var(--color-success, #10b981)' : 'var(--color-accent)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}>
-                      {assignment.status === 'completed' ? 
+                      {assignment.status === 'done' ? 
                         <CheckSquare size={16} /> : 
                         <FileText size={16} />
                       }
@@ -372,11 +372,11 @@ export function CourseDetailClient({ termId, courseId }: CourseDetailClientProps
                         )}
                         <span>•</span>
                         <span style={{ 
-                          color: assignment.status === 'completed' ? 'var(--color-success, #10b981)' : 
+                          color: assignment.status === 'done' ? 'var(--color-success, #10b981)' : 
                                 assignment.dueAt && assignment.dueAt < Date.now() ? 'var(--color-error, #ef4444)' : 
                                 'var(--color-muted)'
                         }}>
-                          {assignment.status === 'completed' ? 'Completed' : 
+                          {assignment.status === 'done' ? 'Completed' : 
                            assignment.dueAt && assignment.dueAt < Date.now() ? 'Overdue' : 'Pending'}
                         </span>
                       </div>

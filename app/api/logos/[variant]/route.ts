@@ -3,10 +3,10 @@ import { getLogoByVariant, urlFor } from '@/lib/sanity';
 
 export async function GET(
   request: Request,
-  { params }: { params: { variant: string } }
+  { params }: { params: Promise<{ variant: string }> }
 ) {
   try {
-    const { variant } = params;
+    const { variant } = await params;
     
     // Validate variant
     const validVariants = ['expanded-regular', 'expanded-dark', 'collapsed-regular', 'collapsed-dark'];
@@ -40,7 +40,7 @@ export async function GET(
     console.error('Logo API error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }

@@ -15,7 +15,7 @@ export function urlFor(source: any) {
 }
 
 // Type definitions for Sanity documents
-interface AppSettings {
+export interface AppSettings {
   appName: string;
   appDescription: string;
   metaKeywords?: string[];
@@ -23,6 +23,25 @@ interface AppSettings {
   favicon?: any;
   appleTouchIcon?: any;
   isActive?: boolean;
+}
+
+export interface FooterSettings {
+  companyName?: string;
+  version?: string;
+  supportEmail?: string;
+  privacyEmail?: string;
+  showSecurityBadge?: boolean;
+  socialLinks?: Array<{
+    platform: string;
+    label?: string;
+    url: string;
+    icon?: string;
+  }>;
+  legalLinks?: Array<{
+    title: string;
+    url: string;
+    isExternal?: boolean;
+  }>;
 }
 
 interface Logo {
@@ -81,5 +100,27 @@ export async function getLogos(): Promise<Logo[]> {
   } catch (error) {
     console.warn('Could not fetch logos from Sanity:', error);
     return [];
+  }
+}
+
+/**
+ * Get logo by variant from Sanity
+ */
+export async function getLogoByVariant(variant: string): Promise<Logo | null> {
+  try {
+    const logo = await client.fetch<Logo | null>(
+      `*[_type == "logo" && variant == $variant][0]{
+        name,
+        variant,
+        image,
+        altText
+      }`,
+      { variant }
+    );
+
+    return logo || null;
+  } catch (error) {
+    console.warn('Could not fetch logo by variant from Sanity:', error);
+    return null;
   }
 }

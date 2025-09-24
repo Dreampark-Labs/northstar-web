@@ -1,0 +1,400 @@
+.dashboard {
+  padding: 16px;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-fg);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.editInstructions {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius-xl);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.editInstructions p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-fg);
+}
+
+.grid {
+  position: relative;
+}
+
+.gridItem {
+  position: relative;
+  height: 100%;
+}
+
+.componentCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-card);
+}
+
+.componentCard.editMode {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px dashed rgba(59, 130, 246, 0.3);
+}
+
+.componentCard.editMode:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+}
+
+.cardHeader {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding: 12px 16px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-fg);
+  margin: 0;
+  padding: 0;
+}
+
+.quickControls {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.componentCard.editMode .quickControls {
+  opacity: 1;
+}
+
+.quickButton {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 20px;
+}
+
+.quickButton:hover {
+  background: var(--color-accent);
+  color: var(--color-accent-fg);
+  border-color: var(--color-accent);
+}
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.ctaContent {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 16px;
+}
+
+.centeredContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 16px;
+}
+
+.ctaTitle {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: var(--color-fg);
+  font-weight: 600;
+}
+
+.ctaDescription {
+  color: var(--color-muted);
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 320px;
+}
+
+/* Loading states */
+.loadingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.loadingCard {
+  height: 280px;
+  opacity: 0.7;
+}
+
+.loadingContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+/* Grid Layout Overrides */
+.grid .react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+
+.grid .react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+
+.grid .react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZG90cyBmaWxsPSIjOTk5IiBkPSJtMTUgMTJjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem00LThjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem00LThjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxem0wIDRjMCAuNTUyLS40NDggMS0xIDFzLTEtLjQ0OC0xLTEgLjQ0OC0xIDEtMSAxIC40NDggMSAxeiIvPgo8L3N2Zz4K');
+  background-position: bottom right;
+  padding: 0 3px 3px 0;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  cursor: se-resize;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.grid .react-grid-item:hover > .react-resizable-handle {
+  opacity: 1;
+}
+
+.grid .react-grid-placeholder {
+  background: rgba(59, 130, 246, 0.2);
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  user-select: none;
+  border: 2px dashed rgba(59, 130, 246, 0.5);
+  border-radius: var(--radius-xl);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 12px;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .quickControls {
+    opacity: 1; /* Always visible on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .editInstructions {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* Dashboard Calendar Styles */
+.dashboardCalendar {
+  height: 100%;
+}
+
+.dashboardCalendar :global(.rbc-toolbar) {
+  display: none; /* Hide the toolbar since we have our own header */
+}
+
+.dashboardCalendar :global(.rbc-calendar) {
+  height: 100%;
+}
+
+.dashboardCalendar :global(.rbc-time-view) {
+  border: none;
+  border-radius: 0;
+}
+
+.dashboardCalendar :global(.rbc-time-header) {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+
+.dashboardCalendar :global(.rbc-header) {
+  padding: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Fixed Layout Styles */
+.fixedLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.calendarCard {
+  grid-column: 1;
+  grid-row: 1 / 4;
+  min-height: 600px;
+}
+
+.rightColumn {
+  grid-column: 2;
+  grid-row: 1 / 4;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dueSoonCard {
+  flex: 1;
+  min-height: 180px;
+}
+
+.recentActivityCard {
+  flex: 1;
+  min-height: 180px;
+}
+
+.quickFilesCard {
+  flex: 1;
+  min-height: 180px;
+}
+
+.welcomeCard {
+  grid-column: 1 / 3;
+  grid-row: 4;
+  min-height: 120px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .fixedLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+  }
+  
+  .calendarCard {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 400px;
+  }
+  
+  .rightColumn {
+    grid-column: 1;
+    grid-row: 2 / 5;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  
+  .welcomeCard {
+    grid-column: 1;
+    grid-row: 5;
+  }
+}
+
+@media (max-width: 768px) {
+  .rightColumn {
+    grid-template-columns: 1fr;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .dashboard {
+    padding: 12px;
+  }
+}

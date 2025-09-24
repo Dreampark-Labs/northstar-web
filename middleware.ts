@@ -1,7 +1,19 @@
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllTermsSlug } from '@/lib/termSlugUtils';
 
-export default function middleware(req: NextRequest) {
+// Define protected routes
+const isProtectedRoute = createRouteMatcher([
+  '/app(.*)',
+  '/debug(.*)',
+]);
+
+// Check if Clerk is properly configured
+const isClerkConfigured = () => {
+  return !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+};
+
+export default clerkMiddleware(async (auth, req: NextRequest) => {
   // Handle redirects from old URL structure to new term-based URLs
   const url = req.nextUrl.clone();
   
@@ -17,32 +29,17 @@ export default function middleware(req: NextRequest) {
     url.pathname = `/app/v1/${defaultTermSlug}/${page}`;
     return NextResponse.redirect(url);
   }
-  // Define public routes that don't require authentication
-  const publicPaths = [
-    '/',
-    '/api/og',
-    '/api/logos',
-    '/cookies',
-    '/privacy',
-    '/studio',
-    '/auth/callback', // Add callback route for external auth
-  ];
 
-  const isPublicPath = publicPaths.some(path => 
-    req.nextUrl.pathname === path || req.nextUrl.pathname.startsWith(path + '/')
-  );
-
-  // Check for authentication token in cookies or headers
-  const authToken = req.cookies.get('auth-token')?.value || 
-                   req.headers.get('authorization')?.replace('Bearer ', '');
-
-  // If accessing a protected route without authentication, redirect to external auth portal
-  // Temporarily disabled for development - external auth server not running
-  // if (!isPublicPath && !authToken) {
-  //   const authPortalUrl = new URL('http://localhost:3002');
-  //   authPortalUrl.searchParams.set('redirect', req.nextUrl.href);
-  //   return NextResponse.redirect(authPortalUrl);
-  // }
+  // Only protect routes if Clerk is properly configured
+  if (isClerkConfigured() && isProtectedRoute(req)) {
+    // If an external auth cookie is present, allow the request to proceed
+    // to avoid bouncing the user to Clerk when they already have a valid
+    // app session (e.g., during onboarding reloads).
+    const externalToken = req.cookies.get('auth-token');
+    if (!externalToken) {
+      await auth.protect();
+    }
+  }
 
   const response = NextResponse.next();
   
@@ -80,7 +77,7 @@ export default function middleware(req: NextRequest) {
   });
   
   return response;
-}
+});
 
 export const config = {
   matcher: [

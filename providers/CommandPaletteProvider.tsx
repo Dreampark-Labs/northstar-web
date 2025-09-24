@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CommandPalette } from '@/components/ui/CommandPalette/CommandPalette';
+import { useSafeBodyStyle } from '@/hooks/useSafePortal';
 
 interface CommandPaletteContextType {
   isOpen: boolean;
@@ -27,17 +28,9 @@ interface CommandPaletteProviderProps {
 
 export function CommandPaletteProvider({ children }: CommandPaletteProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const searchParams = useSearchParams();
-
-  // Monitor URL changes to close modal when search parameter is removed
-  // This matches the EventDetailsModal pattern
-  useEffect(() => {
-    const hasSearch = searchParams.get('search') !== null;
-    if (!hasSearch && isOpen) {
-      // Close modal if no search parameter in URL but modal is open
-      setIsOpen(false);
-    }
-  }, [searchParams, isOpen]);
+  
+  // Use safe body style management
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
 
   const open = () => {
     setIsOpen(true);
@@ -45,9 +38,11 @@ export function CommandPaletteProvider({ children }: CommandPaletteProviderProps
 
   const close = () => {
     // Update URL to remove search parameter
-    const url = new URL(window.location.href);
-    url.searchParams.delete('search');
-    window.history.pushState({}, '', url.toString());
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('search');
+      window.history.replaceState({}, '', url.toString());
+    }
     setIsOpen(false);
   };
 
@@ -56,8 +51,10 @@ export function CommandPaletteProvider({ children }: CommandPaletteProviderProps
       close();
     } else {
       // When toggling via keyboard shortcut, add URL parameter
-      const newUrl = `${window.location.pathname}?search=true`;
-      window.history.pushState({ search: true }, '', newUrl);
+      if (typeof window !== 'undefined') {
+        const newUrl = `${window.location.pathname}?search=true`;
+        window.history.pushState({ search: true }, '', newUrl);
+      }
       open();
     }
   };
@@ -78,18 +75,6 @@ export function CommandPaletteProvider({ children }: CommandPaletteProviderProps
     return () => document.removeEventListener('keydown', handleKeyDown, true);
   }, [toggle]);
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-      
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen]);
-
   const value: CommandPaletteContextType = {
     isOpen,
     open,
@@ -100,10 +85,29 @@ export function CommandPaletteProvider({ children }: CommandPaletteProviderProps
   return (
     <CommandPaletteContext.Provider value={value}>
       {children}
+      <Suspense fallback={null}>
+        <CommandPaletteHandler isOpen={isOpen} setIsOpen={setIsOpen} />
+      </Suspense>
       <CommandPalette 
         isOpen={isOpen} 
         onClose={close} 
       />
     </CommandPaletteContext.Provider>
   );
+}
+
+// Separate component that handles URL search params with Suspense
+function CommandPaletteHandler({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (open: boolean) => void }) {
+  const searchParams = useSearchParams();
+
+  // Monitor URL changes to close modal when search parameter is removed
+  useEffect(() => {
+    const hasSearch = searchParams.get('search') !== null;
+    if (!hasSearch && isOpen) {
+      // Close modal if no search parameter in URL but modal is open
+      setIsOpen(false);
+    }
+  }, [searchParams, isOpen, setIsOpen]);
+
+  return null;
 }

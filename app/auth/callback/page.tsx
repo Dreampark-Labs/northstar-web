@@ -2,32 +2,172 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useAuthConfig } from '@/lib/northstar-auth-client-hooks';
+
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic';
 
 export default function AuthCallback() {
   const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
   const [message, setMessage] = useState('Processing authentication...');
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { getAppUrl, getAuthUrl } = useAuthConfig();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Get the token from URL parameters
-        const token = searchParams.get('token');
-        const userId = searchParams.get('userId');
-        const redirectUrl = searchParams.get('redirect') || '/app/v1/dashboard';
+        // Clear any existing fake auth data first
+        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+        document.cookie = 'auth-user-id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+        document.cookie = 'auth-user-name=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+        document.cookie = 'auth-user-email=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
 
-        if (!token || !userId) {
-          setStatus('error');
-          setMessage('Missing authentication parameters');
+        // Get dynamic app URL
+        const appUrl = await getAppUrl();
+        const redirectUrl = searchParams.get('redirect') || `${appUrl}/app/v1/dashboard`;
+
+        // Helper function to get cookies with debugging
+        const getCookie = (name: string) => {
+          if (typeof document === 'undefined') return null;
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          console.log(`Looking for cookie '${name}':`, parts.length > 1 ? 'Found' : 'Not found');
+          if (parts.length === 2) {
+            const part = parts.pop();
+            if (part) {
+              const cookieValue = part.split(';').shift() || null;
+              console.log(`Cookie '${name}' value:`, cookieValue);
+              return cookieValue;
+            }
+          }
+          return null;
+        };
+
+        // Log all cookies for debugging
+        console.log('All cookies:', document.cookie);
+
+        // Primary Method: Check for authentication data from URL parameters (Solution 1)
+        let token = searchParams.get('token');
+        let userId = searchParams.get('userId');
+        let name = searchParams.get('name');
+        let email = searchParams.get('email');
+
+        console.log('URL Parameters:', { token, userId, name, email });
+
+        if (token && userId) {
+          // Primary method succeeded - we have URL parameters
+          setMessage('Processing authentication from URL parameters...');
+          
+          // Store the authentication data in cookies
+          document.cookie = `auth-token=${token}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+          document.cookie = `auth-user-id=${userId}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+          
+          // Set user display information if available
+          if (name) {
+            document.cookie = `auth-user-name=${encodeURIComponent(name)}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+          }
+          if (email) {
+            document.cookie = `auth-user-email=${encodeURIComponent(email)}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+          }
+
+          setStatus('success');
+          setMessage('Authentication successful! Redirecting...');
+          setTimeout(() => {
+            router.push(redirectUrl);
+          }, 1500);
           return;
         }
 
-        // Store the authentication token in cookies
-        document.cookie = `auth-token=${token}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=strict`;
-        document.cookie = `auth-user-id=${userId}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=strict`;
+        // Check if this is a dpl-auth success callback without URL parameters
+        const authSuccess = searchParams.get('auth_success');
+        console.log('Auth success parameter:', authSuccess);
 
-        // Optional: Create or update user in your database
+        if (authSuccess === 'true') {
+          // Fallback Method: Check for authentication cookies (Solution 2)
+          setMessage('Checking for authentication cookies...');
+          console.log('Trying fallback method: checking cookies');
+          
+          token = getCookie('auth-token');
+          userId = getCookie('auth-user-id');
+          name = getCookie('auth-user-name');
+          email = getCookie('auth-user-email');
+
+          console.log('Cookies found:', { token, userId, name, email });
+
+          if (token && userId) {
+            console.log('Authentication successful via cookies!');
+            // Fallback method succeeded - cookies were already set by dpl-auth
+            setStatus('success');
+            setMessage('Authentication successful via cookies! Redirecting...');
+            setTimeout(() => {
+              window.location.href = redirectUrl;
+            }, 1500);
+            return;
+          } else {
+            console.log('No valid auth cookies found');
+            // Skip API method for now since dpl-auth doesn't have the expected endpoint
+            console.log('Skipping API method - dpl-auth token endpoint not available');
+          }
+          
+          // Last resort: Try to fetch auth data from dpl-auth service (currently disabled)
+          /*
+          setMessage('Attempting to retrieve authentication from dpl-auth service...');
+          try {
+            const response = await fetch('/api/auth/dpl-token', {
+              method: 'GET',
+              credentials: 'include',
+              headers: {
+                'Accept': 'application/json',
+              }
+            });
+
+            if (response.ok) {
+              const authData = await response.json();
+              if (authData.token && authData.userId) {
+                // Use the auth data from dpl-auth service
+                token = authData.token;
+                userId = authData.userId;
+                name = authData.name;
+                email = authData.email;
+                
+                setMessage('Setting up authentication from service...');
+
+                // Store the authentication data in cookies
+                document.cookie = `auth-token=${token}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+                document.cookie = `auth-user-id=${userId}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+                
+                if (name) {
+                  document.cookie = `auth-user-name=${encodeURIComponent(name)}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+                }
+                if (email) {
+                  document.cookie = `auth-user-email=${encodeURIComponent(email)}; path=/; max-age=86400; secure=${location.protocol === 'https:'}; samesite=lax`;
+                }
+
+                setStatus('success');
+                setMessage('Authentication successful! Redirecting...');
+                setTimeout(() => {
+                  window.location.href = redirectUrl;
+                }, 1500);
+                return;
+              }
+            }
+          } catch (fetchError) {
+            console.warn('Could not fetch token from dpl-auth service:', fetchError);
+          }
+          */
+
+          // If we get here, all fallback methods failed
+          setStatus('error');
+          setMessage('Authentication failed - could not retrieve authentication data. Please try logging in again.');
+          return;
+        }
+
+        // No auth_success parameter and no URL token - this might be a direct access or error
+        setStatus('error');
+        setMessage('Authentication failed - missing authentication data. Please try logging in again.');
+
+        // Optional: Sync user data with your backend
         try {
           const response = await fetch('/api/auth/user', {
             method: 'POST',
@@ -35,7 +175,7 @@ export default function AuthCallback() {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ userId, token }),
+            body: JSON.stringify({ userId, token, name, email }),
           });
 
           if (!response.ok) {
@@ -45,14 +185,6 @@ export default function AuthCallback() {
           console.warn('Error syncing user data:', error);
           // Continue anyway - the token is still valid
         }
-
-        setStatus('success');
-        setMessage('Authentication successful! Redirecting...');
-
-        // Redirect to the original destination after a short delay
-        setTimeout(() => {
-          router.push(redirectUrl);
-        }, 1500);
 
       } catch (error) {
         console.error('Authentication callback error:', error);
@@ -64,11 +196,22 @@ export default function AuthCallback() {
     handleAuthCallback();
   }, [searchParams, router]);
 
-  const handleRetry = () => {
-    const authPortalUrl = new URL('http://localhost:3002');
-    const redirectUrl = searchParams.get('redirect') || '/app/v1/dashboard';
-    authPortalUrl.searchParams.set('redirect', window.location.origin + redirectUrl);
-    window.location.href = authPortalUrl.toString();
+  const handleRetry = async () => {
+    try {
+      const authUrl = await getAuthUrl();
+      const appUrl = await getAppUrl();
+      const authPortalUrl = new URL(authUrl);
+      const redirectUrl = searchParams.get('redirect') || `${appUrl}/app/v1/dashboard`;
+      authPortalUrl.searchParams.set('redirect', redirectUrl);
+      window.location.href = authPortalUrl.toString();
+    } catch (error) {
+      console.error('Failed to get auth URLs, using fallback:', error);
+      // Fallback to hardcoded URLs
+      const authPortalUrl = new URL(process.env.NEXT_PUBLIC_AUTH_SERVICE_URL || 'http://localhost:3002');
+      const redirectUrl = searchParams.get('redirect') || (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001') + '/app/v1/dashboard';
+      authPortalUrl.searchParams.set('redirect', redirectUrl);
+      window.location.href = authPortalUrl.toString();
+    }
   };
 
   return (

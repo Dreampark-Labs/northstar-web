@@ -5,6 +5,7 @@ import { Calendar as BigCalendar, momentLocalizer, View, Views } from 'react-big
 import moment from 'moment';
 import { ChevronLeft, ChevronRight, Plus, Video, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button/Button';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import styles from './Calendar.module.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -351,43 +352,45 @@ export function Calendar({
 
   return (
     <div className={`${styles.calendar} ${className || ''}`}>
-      <BigCalendar
-        localizer={localizer}
-        events={bigCalendarEvents}
-        startAccessor="start"
-        endAccessor="end"
-        date={currentDate}
-        view={mapViewToBigCalendar(currentView)}
-        onNavigate={handleNavigate}
-        onView={handleViewChange}
-        onSelectEvent={handleSelectEvent}
-        onSelectSlot={handleSelectSlot}
-        selectable
-        components={{
-          toolbar: CustomToolbar,
-          event: EventComponent,
-        }}
-        step={30}
-        timeslots={2}
-        showMultiDayTimes
-        views={{
-          month: true,
-          week: true,
-          work_week: true,
-          day: true,
-        }}
-        formats={{
-          timeGutterFormat: 'h A',
-          dayHeaderFormat: 'ddd M/D',
-          dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
-            localizer?.format(start, 'MMM DD', culture) + ' - ' + 
-            localizer?.format(end, 'MMM DD', culture),
-        }}
-        min={new Date(0, 0, 0, 0, 0, 0)} // 12 AM (midnight)
-        max={new Date(0, 0, 0, 23, 59, 59)} // 11:59 PM
-        scrollToTime={new Date(0, 0, 0, 8, 0, 0)} // Scroll to 8 AM
-        className={styles.bigCalendar}
-      />
+      <ErrorBoundary>
+        <BigCalendar
+          localizer={localizer}
+          events={bigCalendarEvents}
+          startAccessor="start"
+          endAccessor="end"
+          date={currentDate}
+          view={mapViewToBigCalendar(currentView)}
+          onNavigate={handleNavigate}
+          onView={handleViewChange}
+          onSelectEvent={handleSelectEvent}
+          onSelectSlot={handleSelectSlot}
+          selectable
+          components={{
+            toolbar: CustomToolbar,
+            event: EventComponent,
+          }}
+          step={30}
+          timeslots={2}
+          showMultiDayTimes
+          views={{
+            month: true,
+            week: true,
+            work_week: true,
+            day: true,
+          }}
+          formats={{
+            timeGutterFormat: 'h A',
+            dayHeaderFormat: 'ddd M/D',
+            dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
+              localizer?.format(start, 'MMM DD', culture) + ' - ' + 
+              localizer?.format(end, 'MMM DD', culture),
+          }}
+          min={new Date(0, 0, 0, 0, 0, 0)} // 12 AM (midnight)
+          max={new Date(0, 0, 0, 23, 59, 59)} // 11:59 PM
+          scrollToTime={new Date(0, 0, 0, 8, 0, 0)} // Scroll to 8 AM
+          className={styles.bigCalendar}
+        />
+      </ErrorBoundary>
     </div>
   );
 }

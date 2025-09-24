@@ -52,7 +52,7 @@ function CoursesList() {
   return (
     <div style={{ height: '100%', overflow: 'auto' }}>
       <div style={{ padding: '16px 0' }}>
-        {courses.map((course) => (
+        {courses.map((course: any) => (
           <div
             key={course._id}
             style={{
@@ -150,8 +150,8 @@ function CurrentTermOverview() {
   const displayStats = React.useMemo(() => {
     if (!courses || !courseStats) return null;
     
-    const currentTermCredits = courses.reduce((sum, course) => sum + (course.creditHours || 0), 0);
-    const coursesWithInstructor = courses.filter(course => course.instructor).length;
+    const currentTermCredits = courses.reduce((sum: any, course: any) => sum + (course.creditHours || 0), 0);
+    const coursesWithInstructor = courses.filter((course: any) => course.instructor).length;
     
     // Get the right course count based on filter
     let courseCount = courses.length;
@@ -165,10 +165,10 @@ function CurrentTermOverview() {
       creditCount = courseStats.credits.currentTerm;
     } else if (selectedTermFilter === "past") {
       courseCount = courseStats.courses.past;
-      creditCount = courses.reduce((sum, course) => sum + (course.creditHours || 0), 0);
+      creditCount = courses.reduce((sum: any, course: any) => sum + (course.creditHours || 0), 0);
     } else if (selectedTermFilter === "future") {
       courseCount = courseStats.courses.future;
-      creditCount = courses.reduce((sum, course) => sum + (course.creditHours || 0), 0);
+      creditCount = courses.reduce((sum: any, course: any) => sum + (course.creditHours || 0), 0);
     }
     
     return {

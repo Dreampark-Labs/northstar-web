@@ -27,12 +27,16 @@ const COOKIE_CONSENT_VERSION = '1.0';
 /**
  * Default secure cookie options
  */
-const getSecureCookieOptions = (): CookieOptions => ({
-  secure: typeof window !== 'undefined' && window.location.protocol === 'https:',
-  sameSite: 'strict',
-  path: '/',
-  maxAge: 365 * 24 * 60 * 60, // 1 year
-});
+const getSecureCookieOptions = (): CookieOptions => {
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  return {
+    secure: isHttps,
+    // Chrome blocks SameSite=None without Secure. On http (localhost dev), fall back to Lax
+    sameSite: isHttps ? 'none' : 'lax',
+    path: '/',
+    maxAge: 365 * 24 * 60 * 60, // 1 year
+  };
+};
 
 /**
  * Set a secure cookie

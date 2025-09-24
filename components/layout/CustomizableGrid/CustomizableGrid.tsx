@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { Responsive, WidthProvider, Layout } from 'react-grid-layout';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Layout } from 'react-grid-layout';
+import { SafeResponsiveGridLayout } from '@/components/ui/SafeGridLayout';
 import { Button } from '@/components/ui/Button/Button';
 import { Settings, Maximize2, Minimize2 } from 'lucide-react';
+import { safeDOMOperation } from '@/lib/devUtils';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import styles from './CustomizableGrid.module.css';
-
-const ResponsiveGridLayout = WidthProvider(Responsive);
 
 // Set minimum container width to prevent excessive shrinking
 const GRID_MIN_WIDTH = 1000;
@@ -46,9 +46,17 @@ export function CustomizableGrid({
   const [isEditMode, setIsEditMode] = useState(false);
   const [layouts, setLayouts] = useState<{ [key: string]: Layout[] }>({});
   const [mounted, setMounted] = useState(false);
+  const mountedRef = useRef(true);
 
   const LAYOUT_STORAGE_KEY = `northstar-${pageId}-layout`;
   const LAYOUT_VERSION = 'v1.1'; // Updated version to force layout reset
+
+  // Ensure cleanup on unmount
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   // Generate default layout
   const generateDefaultLayout = (): Layout[] => {
@@ -237,18 +245,24 @@ export function CustomizableGrid({
 
   // Save layout changes
   const handleLayoutChange = useCallback((layout: Layout[], allLayouts: { [key: string]: Layout[] }) => {
-    setLayouts(allLayouts);
+    if (!mountedRef.current) return;
     
-    // Save to localStorage with version
-    try {
-      const layoutData = {
-        version: LAYOUT_VERSION,
-        layouts: allLayouts
-      };
-      localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layoutData));
-    } catch (error) {
-      console.warn('Failed to save layout:', error);
-    }
+    safeDOMOperation(() => {
+      if (!mountedRef.current) return;
+      
+      setLayouts(allLayouts);
+      
+      // Save to localStorage with version
+      try {
+        const layoutData = {
+          version: LAYOUT_VERSION,
+          layouts: allLayouts
+        };
+        localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layoutData));
+      } catch (error) {
+        console.warn('Failed to save layout:', error);
+      }
+    });
   }, [LAYOUT_STORAGE_KEY, LAYOUT_VERSION]);
 
   const toggleEditMode = () => {
@@ -280,30 +294,36 @@ export function CustomizableGrid({
   };
 
   const quickResize = (componentId: string, newSize: { w: number; h: number }) => {
-    const currentLayout = layouts.lg || defaultLayout;
-    const updatedLayout = currentLayout.map(item => 
-      item.i === componentId 
-        ? { ...item, ...newSize }
-        : item
-    );
+    if (!mountedRef.current) return;
     
-    const newLayouts = { 
-      ...layouts, 
-      lg: updatedLayout 
-    };
-    
-    setLayouts(newLayouts);
-    
-    // Save to localStorage with version
-    try {
-      const layoutData = {
-        version: LAYOUT_VERSION,
-        layouts: newLayouts
+    safeDOMOperation(() => {
+      if (!mountedRef.current) return;
+      
+      const currentLayout = layouts.lg || defaultLayout;
+      const updatedLayout = currentLayout.map(item => 
+        item.i === componentId 
+          ? { ...item, ...newSize }
+          : item
+      );
+      
+      const newLayouts = { 
+        ...layouts, 
+        lg: updatedLayout 
       };
-      localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layoutData));
-    } catch (error) {
-      console.warn('Failed to save layout:', error);
-    }
+      
+      setLayouts(newLayouts);
+      
+      // Save to localStorage with version
+      try {
+        const layoutData = {
+          version: LAYOUT_VERSION,
+          layouts: newLayouts
+        };
+        localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layoutData));
+      } catch (error) {
+        console.warn('Failed to save layout:', error);
+      }
+    });
   };
 
   // Prevent hydration mismatch by not rendering until mounted
@@ -374,7 +394,7 @@ export function CustomizableGrid({
       )}
 
       {/* Responsive Grid Layout */}
-      <ResponsiveGridLayout
+      <SafeResponsiveGridLayout
         className={styles.grid}
         layouts={layouts}
         onLayoutChange={handleLayoutChange}
@@ -430,7 +450,7 @@ export function CustomizableGrid({
             </div>
           </div>
         ))}
-      </ResponsiveGridLayout>
+      </SafeResponsiveGridLayout>
     </div>
   );
 }

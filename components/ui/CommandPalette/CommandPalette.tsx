@@ -22,7 +22,7 @@ interface CommandItem {
   id: string;
   title: string;
   subtitle?: string;
-  icon: React.ComponentType<{ size?: number }>;
+  icon: React.ComponentType<any>;
   action: () => void;
   category: 'navigation' | 'actions' | 'settings';
   keywords: string[];
@@ -38,7 +38,17 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { open: openAssignmentModal } = useAssignmentModalContext();
+  
+  // Safely get the assignment modal context - it might not be available during static generation
+  let assignmentModalContext;
+  try {
+    assignmentModalContext = useAssignmentModalContext();
+  } catch (error) {
+    // During static generation, the context might not be available
+    assignmentModalContext = { open: () => {} };
+  }
+  
+  const { open: openAssignmentModal } = assignmentModalContext;
 
   // Define all available commands
   const commands: CommandItem[] = [

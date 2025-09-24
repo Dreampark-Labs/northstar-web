@@ -15,6 +15,7 @@ import {
   User,
   Check
 } from 'lucide-react';
+import { useSafePortal, useSafeBodyStyle } from '@/hooks/useSafePortal';
 import styles from './AddEventModal.module.css';
 
 export type EventType = 'meeting' | 'class' | 'assignment' | 'exam' | 'office-hours' | 'personal' | 'study';
@@ -42,6 +43,11 @@ interface AddEventModalProps {
 }
 
 export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: AddEventModalProps) {
+  const { createSafePortal } = useSafePortal();
+  
+  // Prevent body scroll when modal is open
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
+  
   const [formData, setFormData] = useState<EventFormData>({
     title: '',
     type: 'personal',
@@ -195,7 +201,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
       // Find course ID if course code is provided
       let courseId: Id<"courses"> | undefined;
       if (formData.courseCode) {
-        const course = courses.find(c => c.code === formData.courseCode);
+        const course = courses.find((c: any) => c.code === formData.courseCode);
         courseId = course?._id as Id<"courses">;
       }
 
@@ -211,7 +217,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
         courseCode: formData.courseCode.trim() || undefined,
         courseId,
         meetingUrl: formData.meetingUrl.trim() || undefined,
-        meetingType: formData.meetingType || undefined,
+        meetingType: formData.meetingType && formData.meetingType !== 'other' ? formData.meetingType : undefined,
         attendees: undefined,
       });
 
@@ -282,7 +288,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
   if (!isOpen) return null;
 
   if (step === 'success') {
-    return (
+    const successContent = (
       <div className={styles.overlay} onClick={onClose}>
         <div className={styles.modal} onClick={e => e.stopPropagation()}>
           <div className={styles.successContent}>
@@ -297,6 +303,8 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
         </div>
       </div>
     );
+    
+    return createSafePortal(successContent);
   }
 
   const getEventTypeIcon = (type: EventType) => {
@@ -322,7 +330,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
   const courseRelatedTypes = ['class', 'assignment', 'exam', 'office-hours'];
   const showCourseField = courseRelatedTypes.includes(formData.type);
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
@@ -405,7 +413,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
                   onChange={(e) => handleInputChange('courseCode', e.target.value)}
                 >
                   <option value="">Select a course (optional)</option>
-                  {courses.map(course => (
+                  {courses.map((course: any) => (
                     <option key={course._id} value={course.code}>
                       {course.code} - {course.title}
                     </option>
@@ -617,5 +625,7 @@ export function AddEventModal({ isOpen, onClose, initialDate, initialHour }: Add
       </div>
     </div>
   );
+  
+  return createSafePortal(modalContent);
 }
 

@@ -17,10 +17,20 @@ const EventDetailsModalContext = createContext<EventDetailsModalContextType | un
 export function EventDetailsModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [event, setEvent] = useState<CalendarEvent | null>(null);
-  const searchParams = useSearchParams();
+  
+  // Safely get search params - this will be null during static generation
+  let searchParams: URLSearchParams | null = null;
+  try {
+    searchParams = useSearchParams();
+  } catch (error) {
+    // During static generation, useSearchParams will throw
+    // We'll handle this gracefully
+  }
 
   // Monitor URL changes to close modal when event parameter is removed
   useEffect(() => {
+    if (!searchParams) return; // Skip during static generation
+    
     const eventId = searchParams.get('event');
     if (!eventId && isOpen) {
       // Close modal if no event ID in URL but modal is open

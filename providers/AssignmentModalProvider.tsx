@@ -27,11 +27,21 @@ interface AssignmentModalProviderProps {
 
 export function AssignmentModalProvider({ children }: AssignmentModalProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const searchParams = useSearchParams();
+  
+  // Safely get search params - this will be null during static generation
+  let searchParams: URLSearchParams | null = null;
+  try {
+    searchParams = useSearchParams();
+  } catch (error) {
+    // During static generation, useSearchParams will throw
+    // We'll handle this gracefully
+  }
 
   // Monitor URL changes to close modal when assignment parameter is removed
   // This matches the EventDetailsModal pattern
   useEffect(() => {
+    if (!searchParams) return; // Skip during static generation
+    
     const hasAssignment = searchParams.get('assignment') !== null;
     if (!hasAssignment && isOpen) {
       // Close modal if no assignment parameter in URL but modal is open

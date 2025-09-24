@@ -43,12 +43,12 @@ export function CookieConsentProvider({ children }: CookieConsentProviderProps) 
     setShowBanner(false);
     
     // Initialize analytics if allowed
-    if (newConsent.analytics && typeof window !== 'undefined') {
+    if (newConsent && newConsent.analytics && typeof window !== 'undefined') {
       initializeAnalytics();
     }
     
     // Initialize marketing cookies if allowed
-    if (newConsent.marketing && typeof window !== 'undefined') {
+    if (newConsent && newConsent.marketing && typeof window !== 'undefined') {
       initializeMarketing();
     }
   };

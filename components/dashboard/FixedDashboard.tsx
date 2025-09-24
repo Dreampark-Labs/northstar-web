@@ -11,14 +11,14 @@ import { DynamicHead } from '@/components/ui/DynamicHead';
 import { ClipboardImageIcon, DocumentIcon } from '@sanity/icons';
 import { getCourseColor, generateRecurringEvents } from '@/lib/calendar';
 import { type CalendarEvent } from '@/components/ui/Calendar';
-import { useAssignmentDetailsModalContext } from '@/providers/AssignmentDetailsModalProvider';
+// import { useAssignmentDetailsModalContext } from '@/providers/AssignmentDetailsModalProvider';
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export function FixedDashboard() {
   const params = useParams();
   const termSlug = params?.termSlug as string;
-  const { open: openAssignmentDetails } = useAssignmentDetailsModalContext();
+  // const { open: openAssignmentDetails } = useAssignmentDetailsModalContext();
   
   // Fetch data from authenticated user
   const allAssignments = useQuery(api.assignments.list);
@@ -30,19 +30,19 @@ export function FixedDashboard() {
   // Calculate stats
   const completedAssignmentsCount = React.useMemo(() => {
     if (!allAssignments) return 0;
-    return allAssignments.filter(assignment => assignment.status === 'done').length;
+    return allAssignments.filter((assignment: any) => assignment.status === 'done').length;
   }, [allAssignments]);
 
   const activeCoursesCount = React.useMemo(() => {
     const now = new Date();
-    const activeTerm = dbTerms.find(term => {
+    const activeTerm = dbTerms.find((term: any) => {
       const startDate = new Date(term.startDate);
       const endDate = new Date(term.endDate);
       return now >= startDate && now <= endDate;
     });
     
     if (!activeTerm) return 0;
-    return dbCourses.filter(course => course.termId === activeTerm._id).length;
+    return dbCourses.filter((course: any) => course.termId === activeTerm._id).length;
   }, [dbCourses, dbTerms]);
 
   const thisWeekEventsCount = React.useMemo(() => {
@@ -58,14 +58,14 @@ export function FixedDashboard() {
     let count = 0;
     
     // Count events this week
-    count += dbEvents.filter(event => {
+    count += dbEvents.filter((event: any) => {
       const eventDate = new Date(event.startTime);
       return eventDate >= startOfWeek && eventDate <= endOfWeek;
     }).length;
     
     // Count assignments due this week
     if (allAssignments) {
-      count += allAssignments.filter(assignment => {
+      count += allAssignments.filter((assignment: any) => {
         if (assignment.status === 'done') return false;
         const dueDate = new Date(assignment.dueAt);
         return dueDate >= startOfWeek && dueDate <= endOfWeek;
@@ -82,7 +82,7 @@ export function FixedDashboard() {
     const events: CalendarEvent[] = [];
     
     // Add events from the events table
-    dbEvents.forEach(event => {
+    dbEvents.forEach((event: any) => {
       events.push({
         id: event._id,
         title: event.title,
@@ -99,8 +99,8 @@ export function FixedDashboard() {
 
     // Add assignments as calendar events
     if (allAssignments) {
-      allAssignments.forEach(assignment => {
-        const course = dbCourses.find(c => c._id === assignment.courseId);
+      allAssignments.forEach((assignment: any) => {
+        const course = dbCourses.find((c: any) => c._id === assignment.courseId);
         events.push({
           id: `assignment-${assignment._id}`,
           title: `${assignment.title} (Due)`,
@@ -115,8 +115,8 @@ export function FixedDashboard() {
     }
 
     // Generate class events from course schedules
-    dbCourses.forEach(course => {
-      const term = dbTerms.find(t => t._id === course.termId);
+    dbCourses.forEach((course: any) => {
+      const term = dbTerms.find((t: any) => t._id === course.termId);
       if (!term) return;
 
       const courseEvents = generateRecurringEvents(
@@ -330,7 +330,7 @@ export function FixedDashboard() {
               <CardContent style={{ padding: 0, height: 'calc(100% - 60px)' }}>
                 <DueSoon
                   maxItems={8}
-                  onAssignmentClick={openAssignmentDetails}
+                  onAssignmentClick={() => console.log('Assignment clicked')}
                 />
               </CardContent>
             </Card>

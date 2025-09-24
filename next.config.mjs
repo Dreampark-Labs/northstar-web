@@ -8,6 +8,11 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
 
+  // Experimental optimizations
+  experimental: {
+    optimizePackageImports: ['@clerk/nextjs']
+  },
+
   // Environment variables
   env: {
     NEXT_PUBLIC_SANITY_PROJECT_ID: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
@@ -58,12 +63,13 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-              "connect-src 'self' https://*.convex.cloud https://*.convex.site wss://*.convex.cloud wss://*.convex.site ws://localhost:* wss://localhost:*",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev",
+              "connect-src 'self' https://*.convex.cloud https://*.convex.site wss://*.convex.cloud wss://*.convex.site ws://localhost:* wss://localhost:* https://*.sanity.io https://*.apicdn.sanity.io https://*.clerk.accounts.dev https://clerk-telemetry.com",
               "img-src 'self' data: https: http:",
               "style-src 'self' 'unsafe-inline'",
               "font-src 'self' data:",
               "frame-src 'self'",
+              "worker-src 'self' blob:",
             ].join('; ')
           },
         ],

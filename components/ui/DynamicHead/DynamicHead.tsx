@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAppSettings } from '@/hooks/useAppSettings';
 import { urlFor } from '@/lib/sanity';
+import { safeDOMOperation } from '@/lib/devUtils';
 
 interface DynamicHeadProps {
   titleSuffix?: string;
@@ -62,47 +63,71 @@ export function DynamicHead({ titleSuffix, description, keywords }: DynamicHeadP
 function updateMetaTag(name: string, content: string) {
   if (typeof document === 'undefined') return;
 
-  let meta = document.querySelector(`meta[name="${name}"]`);
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', name);
-    document.head.appendChild(meta);
-  }
-  meta.setAttribute('content', content);
+  safeDOMOperation(() => {
+    let meta = document.querySelector(`meta[name="${name}"]`);
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', name);
+      if (document.head) {
+        document.head.appendChild(meta);
+      }
+    }
+    if (meta) {
+      meta.setAttribute('content', content);
+    }
+  });
 }
 
 function updateFavicon(faviconUrl: string) {
   if (typeof document === 'undefined') return;
 
-  // Remove existing favicon links
-  const existingLinks = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
-  existingLinks.forEach(link => link.remove());
+  safeDOMOperation(() => {
+    // Remove existing favicon links
+    const existingLinks = document.querySelectorAll('link[rel="icon"], link[rel="shortcut icon"]');
+    existingLinks.forEach(link => {
+      if (link && link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    });
 
-  // Add new favicon
-  const link = document.createElement('link');
-  link.rel = 'icon';
-  link.type = 'image/x-icon';
-  link.href = faviconUrl;
-  document.head.appendChild(link);
+    // Add new favicon
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/x-icon';
+    link.href = faviconUrl;
+    if (document.head) {
+      document.head.appendChild(link);
+    }
 
-  // Also add shortcut icon for older browsers
-  const shortcutLink = document.createElement('link');
-  shortcutLink.rel = 'shortcut icon';
-  shortcutLink.type = 'image/x-icon';
-  shortcutLink.href = faviconUrl;
-  document.head.appendChild(shortcutLink);
+    // Also add shortcut icon for older browsers
+    const shortcutLink = document.createElement('link');
+    shortcutLink.rel = 'shortcut icon';
+    shortcutLink.type = 'image/x-icon';
+    shortcutLink.href = faviconUrl;
+    if (document.head) {
+      document.head.appendChild(shortcutLink);
+    }
+  });
 }
 
 function updateAppleTouchIcon(appleTouchIconUrl: string) {
   if (typeof document === 'undefined') return;
 
-  // Remove existing apple-touch-icon links
-  const existingLinks = document.querySelectorAll('link[rel="apple-touch-icon"]');
-  existingLinks.forEach(link => link.remove());
+  safeDOMOperation(() => {
+    // Remove existing apple-touch-icon links
+    const existingLinks = document.querySelectorAll('link[rel="apple-touch-icon"]');
+    existingLinks.forEach(link => {
+      if (link && link.parentNode) {
+        link.parentNode.removeChild(link);
+      }
+    });
 
-  // Add new apple-touch-icon
-  const link = document.createElement('link');
-  link.rel = 'apple-touch-icon';
-  link.href = appleTouchIconUrl;
-  document.head.appendChild(link);
+    // Add new apple-touch-icon
+    const link = document.createElement('link');
+    link.rel = 'apple-touch-icon';
+    link.href = appleTouchIconUrl;
+    if (document.head) {
+      document.head.appendChild(link);
+    }
+  });
 }

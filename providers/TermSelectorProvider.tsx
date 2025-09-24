@@ -60,7 +60,7 @@ export function TermSelectorProvider({ children }: { children: ReactNode }) {
   // Find current term
   const currentTerm = React.useMemo(() => {
     if (!effectiveTerms) return null;
-    return effectiveTerms.find(term => term.status === 'current') || null;
+    return effectiveTerms.find((term: any) => term.status === 'current') || null;
   }, [effectiveTerms]);
 
   // Get display name for selected term
@@ -78,7 +78,7 @@ export function TermSelectorProvider({ children }: { children: ReactNode }) {
         return 'Future Terms';
       default:
         // Specific term ID
-        const term = effectiveTerms.find(t => t._id === selectedTermFilter);
+        const term = effectiveTerms.find((t: any) => t._id === selectedTermFilter);
         return term ? term.name : 'Unknown Term';
     }
   }, [selectedTermFilter, effectiveTerms, currentTerm]);
@@ -106,7 +106,7 @@ export function TermSelectorProvider({ children }: { children: ReactNode }) {
         setSelectedTermFilter('all');
       } else {
         // Try to find the term by ID
-        const foundTerm = effectiveTerms?.find(term => term._id === slugInfo.id);
+        const foundTerm = effectiveTerms?.find((term: any) => term._id === slugInfo.id);
         if (foundTerm) {
           setSelectedTermFilter(foundTerm._id);
         }
@@ -118,12 +118,15 @@ export function TermSelectorProvider({ children }: { children: ReactNode }) {
   const navigateToTerm = React.useCallback((filter: TermFilter, currentPage = 'dashboard') => {
     let slug: string;
     
+    // Update the selected term filter immediately for responsive UI
+    setSelectedTermFilter(filter);
+    
     if (filter === 'all') {
       slug = getAllTermsSlug();
     } else if (filter === 'current' && currentTerm) {
       slug = TermSlugValidator.getSlugFromTerm(currentTerm);
     } else if (typeof filter === 'string' && effectiveTerms) {
-      const term = effectiveTerms.find(t => t._id === filter);
+      const term = effectiveTerms.find((t: any) => t._id === filter);
       if (term) {
         slug = TermSlugValidator.getSlugFromTerm(term);
       } else {
@@ -144,7 +147,7 @@ export function TermSelectorProvider({ children }: { children: ReactNode }) {
 
     const newPath = `/app/v1/${slug}/${currentPage}`;
     router.push(newPath);
-  }, [currentTerm, effectiveTerms, pathname, router]);
+  }, [currentTerm, effectiveTerms, pathname, router, setSelectedTermFilter]);
 
   const value: TermSelectorContextType = {
     selectedTermFilter,

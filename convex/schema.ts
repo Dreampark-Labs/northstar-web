@@ -35,6 +35,7 @@ export default defineSchema({
     major: v.optional(v.string()),
     majorCategory: v.optional(v.string()),
     minor: v.optional(v.string()),
+    currentYear: v.optional(v.string()),
     
     // GPA Tracking System
     transferGPA: v.optional(v.number()), // GPA from transfer credits
@@ -89,6 +90,33 @@ export default defineSchema({
     .index("by_user_status", ["userId", "status"])
     .index("by_purgeAt", ["purgeAt"])
     .index("by_user_name", ["userId", "lc_name"]),
+
+  // Schools dictionary
+  schools: defineTable({
+    name: v.string(),
+    lc_name: v.string(),
+    city: v.optional(v.string()),
+    state: v.optional(v.string()),
+    country: v.optional(v.string()),
+    website: v.optional(v.string()),
+    type: v.optional(v.string()), // e.g., university, community college, hs
+  })
+    .index("by_name", ["lc_name"]),
+
+  // Major Categories dictionary
+  majorCategories: defineTable({
+    name: v.string(),
+    lc_name: v.string(),
+    description: v.optional(v.string()),
+    commonMajors: v.optional(v.array(v.string())),
+  })
+    .index("by_name", ["lc_name"]),
+
+  // Ethnicities dictionary for demographics
+  ethnicities: defineTable({
+    name: v.string(),
+    lc_name: v.string(),
+  }).index("by_name", ["lc_name"]),
 
   courses: defineTable({
     userId: v.id("users"),

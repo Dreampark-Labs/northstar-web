@@ -31,7 +31,7 @@ export function DueSoon({
   // Create a map of course IDs to course info for quick lookup
   const courseMap = React.useMemo(() => {
     if (!courses) return {};
-    return courses.reduce((map, course) => {
+    return courses.reduce((map: any, course: any) => {
       map[course._id] = course;
       return map;
     }, {} as Record<string, any>);
@@ -45,11 +45,11 @@ export function DueSoon({
     console.log('DueSoon - courseMap:', courseMap);
     
     return assignments
-      .map(assignment => ({
+      .map((assignment: any) => ({
         ...assignment,
         course: courseMap[assignment.courseId]
       }))
-      .filter(assignment => assignment.course) // Only include assignments with valid courses
+      .filter((assignment: any) => assignment.course) // Only include assignments with valid courses
       .slice(0, maxItems);
   }, [assignments, courseMap, maxItems]);
 
@@ -125,7 +125,7 @@ export function DueSoon({
   return (
     <div className={`${styles.container} ${className || ''}`}>
       <div className={styles.scrollContainer}>
-        {enrichedAssignments.map((assignment) => (
+        {enrichedAssignments.map((assignment: any) => (
           <div
             key={assignment._id}
             className={`${styles.assignmentItem} ${getUrgencyClass(assignment.dueAt)} ${onAssignmentClick ? styles.clickable : ''}`}

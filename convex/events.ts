@@ -22,10 +22,16 @@ export const create = mutation({
       throw new Error("Content contains obvious PII");
     }
 
+    // Filter out invalid event types and map to valid ones
+    const validEventTypes = ["meeting", "class", "assignment", "exam", "office-hours"] as const;
+    const eventType = validEventTypes.includes(args.type as any) ? args.type as any : "meeting" as const;
+    
+    const { type, ...argsWithoutType } = args;
     const eventId = await ctx.db.insert("events", {
       userId: user._id,
       lc_title: args.title.toLowerCase(),
-      ...args,
+      ...argsWithoutType,
+      type: eventType,
     });
 
     // Log activity event

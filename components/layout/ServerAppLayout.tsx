@@ -2,14 +2,13 @@ import { ClientAppLayout } from "./ClientAppLayout";
 
 // Simple default app settings for the academic productivity app
 const defaultAppSettings = {
-  name: "Northstar",
-  description: "Academic Productivity Application",
-  version: "1.0.0"
+  appName: "Northstar",
+  appDescription: "Academic Productivity Application"
 };
 
 const defaultFooterSettings = {
   companyName: "Northstar",
-  year: new Date().getFullYear()
+  version: "1.0.0"
 };
 
 export async function ServerAppLayout({ children }: { children: React.ReactNode }) {

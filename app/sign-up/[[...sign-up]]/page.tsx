@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/nextjs';
+import { CustomSignUp } from '@/components/auth/CustomSignUp';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -8,24 +8,8 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      padding: '20px',
-      backgroundColor: 'var(--color-bg)',
-    }}>
-      <SignUp 
-        appearance={{
-          elements: {
-            rootBox: "mx-auto",
-            card: "shadow-lg"
-          }
-        }}
-        redirectUrl="/app/v1/dashboard"
-        signInUrl="/sign-in"
-      />
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <CustomSignUp />
     </div>
   );
 }

@@ -97,11 +97,11 @@ export function CalendarClient() {
     }
 
     // Convert database terms and associate courses
-    return dbTerms.map(term => {
+    return dbTerms.map((term: any) => {
       // Find courses for this term
       const termCourses = dbCourses
-        .filter(course => course.termId === term._id)
-        .map(course => ({
+        .filter((course: any) => course.termId === term._id)
+        .map((course: any) => ({
           id: course._id,
           name: course.title,
           code: course.code,
@@ -125,7 +125,7 @@ export function CalendarClient() {
     const events: CalendarEvent[] = [];
     
     // Add events from the events table
-    dbEvents.forEach(event => {
+    dbEvents.forEach((event: any) => {
       events.push({
         id: event._id,
         title: event.title,
@@ -141,8 +141,8 @@ export function CalendarClient() {
     });
 
     // Add assignments as calendar events
-    dbAssignments.forEach(assignment => {
-      const course = dbCourses.find(c => c._id === assignment.courseId);
+    dbAssignments.forEach((assignment: any) => {
+      const course = dbCourses.find((c: any) => c._id === assignment.courseId);
       events.push({
         id: `assignment-${assignment._id}`,
         title: `${assignment.title} (Due)`,
@@ -156,9 +156,9 @@ export function CalendarClient() {
     });
 
     // Generate class events from course schedules
-    dbCourses.forEach(course => {
+    dbCourses.forEach((course: any) => {
       // Find the term for this course
-      const term = dbTerms.find(t => t._id === course.termId);
+      const term = dbTerms.find((t: any) => t._id === course.termId);
       if (!term) {
         console.log('No term found for course:', course.code);
         return;
@@ -230,7 +230,7 @@ export function CalendarClient() {
   });
 
   return (
-    <div style={{ height: '100vh', overflow: 'hidden' }}>
+    <div data-page="calendar" style={{ height: '100vh', overflow: 'hidden' }}>
       <NotionCalendar
         events={allCalendarEvents}
         terms={displayTerms}

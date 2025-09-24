@@ -18,12 +18,12 @@ export const create = mutation({
     // Verify parent ownership
     if (args.parentType === "course") {
       const course = await ctx.db.get(args.parentId as any);
-      if (!course || course.userId !== user._id) {
+      if (!course || !('userId' in course) || course.userId !== user._id) {
         throw new Error("Course not found or unauthorized");
       }
     } else if (args.parentType === "assignment") {
       const assignment = await ctx.db.get(args.parentId as any);
-      if (!assignment || assignment.userId !== user._id) {
+      if (!assignment || !('userId' in assignment) || assignment.userId !== user._id) {
         throw new Error("Assignment not found or unauthorized");
       }
     }
@@ -82,12 +82,12 @@ export const listByParent = query({
     // Verify parent ownership
     if (args.parentType === "course") {
       const course = await ctx.db.get(args.parentId as any);
-      if (!course || course.userId !== user._id) {
+      if (!course || !('userId' in course) || course.userId !== user._id) {
         return [];
       }
     } else if (args.parentType === "assignment") {
       const assignment = await ctx.db.get(args.parentId as any);
-      if (!assignment || assignment.userId !== user._id) {
+      if (!assignment || !('userId' in assignment) || assignment.userId !== user._id) {
         return [];
       }
     }

@@ -10,6 +10,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useTermSelector } from '@/providers/TermSelectorProvider';
+import { useSafeBodyStyle } from '@/hooks/useSafePortal';
 import styles from './TermSelectorModal.module.css';
 
 interface TermSelectorModalProps {
@@ -22,12 +23,17 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  
+  // Use safe body style management
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
+  
   const { 
     selectedTermFilter, 
     setSelectedTermFilter, 
     terms, 
     selectedTermName, 
-    isLoading: termsLoading 
+    isLoading: termsLoading,
+    navigateToTerm 
   } = useTermSelector();
 
   // Group terms by status for hierarchical display
@@ -65,12 +71,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
         id: 'current-header',
         title: 'Current Term',
         subtitle: '',
-        icon: null,
-        filter: null, // Not selectable
-        category: 'status' as const,
+        icon: Circle,
+        filter: 'all' as const, // Not selectable but needs valid type
+        category: 'general' as const,
         keywords: ['current', 'active', 'now'],
-        isSection: true,
-        isClickable: false
+        isSection: true
       });
       
       // Individual current terms
@@ -79,12 +84,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
           id: term._id,
           title: term.name,
           subtitle: '',
-          icon: null,
-          filter: term._id,
-          category: 'current' as const,
+          icon: Circle,
+          filter: term._id as any,
+          category: 'general' as const,
           keywords: [term.name.toLowerCase(), 'current', 'term'],
-          isSection: false,
-          isNested: true
+          isSection: false
         });
       });
     }
@@ -95,12 +99,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
         id: 'future-header',
         title: 'Future Term',
         subtitle: '',
-        icon: null,
-        filter: null, // Not selectable
-        category: 'status' as const,
+        icon: Circle,
+        filter: 'all' as const, // Not selectable but needs valid type
+        category: 'general' as const,
         keywords: ['future', 'upcoming', 'next'],
         isSection: true,
-        isClickable: false
       });
       
       // Individual future terms
@@ -109,12 +112,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
           id: term._id,
           title: term.name,
           subtitle: '',
-          icon: null,
-          filter: term._id,
-          category: 'future' as const,
+          icon: Circle,
+          filter: term._id as any,
+          category: 'general' as const,
           keywords: [term.name.toLowerCase(), 'future', 'term'],
-          isSection: false,
-          isNested: true
+          isSection: false
         });
       });
     }
@@ -125,12 +127,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
         id: 'past-header',
         title: 'Past Term',
         subtitle: '',
-        icon: null,
-        filter: null, // Not selectable
-        category: 'status' as const,
+        icon: Circle,
+        filter: 'all' as const, // Not selectable but needs valid type
+        category: 'general' as const,
         keywords: ['past', 'completed', 'finished', 'old'],
         isSection: true,
-        isClickable: false
       });
       
       // Individual past terms
@@ -139,12 +140,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
           id: term._id,
           title: term.name,
           subtitle: '',
-          icon: null,
-          filter: term._id,
-          category: 'past' as const,
+          icon: Circle,
+          filter: term._id as any,
+          category: 'general' as const,
           keywords: [term.name.toLowerCase(), 'past', 'term'],
-          isSection: false,
-          isNested: true
+          isSection: false
         });
       });
     }
@@ -172,35 +172,11 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
     if (matchingTerms.length > 0) {
       // Group matching terms by category
       const matchingByCategory = {
-        general: matchingTerms.filter(t => t.category === 'general'),
-        current: matchingTerms.filter(t => t.category === 'current'),
-        future: matchingTerms.filter(t => t.category === 'future'),
-        past: matchingTerms.filter(t => t.category === 'past')
+        general: matchingTerms.filter(t => t.category === 'general')
       };
       
       // Add general terms (like "All Terms")
       matchingOptions.push(...matchingByCategory.general);
-      
-      // Add current terms with header if any current terms match
-      if (matchingByCategory.current.length > 0) {
-        const currentHeader = termOptions.find(opt => opt.id === 'current-header');
-        if (currentHeader) matchingOptions.push(currentHeader);
-        matchingOptions.push(...matchingByCategory.current);
-      }
-      
-      // Add future terms with header if any future terms match
-      if (matchingByCategory.future.length > 0) {
-        const futureHeader = termOptions.find(opt => opt.id === 'future-header');
-        if (futureHeader) matchingOptions.push(futureHeader);
-        matchingOptions.push(...matchingByCategory.future);
-      }
-      
-      // Add past terms with header if any past terms match
-      if (matchingByCategory.past.length > 0) {
-        const pastHeader = termOptions.find(opt => opt.id === 'past-header');
-        if (pastHeader) matchingOptions.push(pastHeader);
-        matchingOptions.push(...matchingByCategory.past);
-      }
     }
     
     return matchingOptions;
@@ -263,14 +239,7 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
     }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
 
   // Reset state when modal opens
@@ -291,7 +260,8 @@ export function TermSelectorModal({ isOpen, onClose }: TermSelectorModalProps) {
   }, [filteredOptions, isOpen]);
 
   const handleTermSelect = (termFilter: typeof selectedTermFilter) => {
-    setSelectedTermFilter(termFilter);
+    // Use navigateToTerm to update the URL and selected term
+    navigateToTerm(termFilter);
     onClose();
   };
 

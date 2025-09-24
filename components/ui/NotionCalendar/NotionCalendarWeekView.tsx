@@ -11,6 +11,7 @@ import {
   Clock
 } from 'lucide-react';
 import { type CalendarEvent } from '@/components/ui/Calendar';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import styles from './NotionCalendarWeekView.module.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -180,36 +181,38 @@ export function NotionCalendarWeekView({
 
       {/* Big Calendar */}
       <div className={styles.bigCalendarContainer}>
-        <BigCalendar
-          localizer={localizer}
-          events={bigCalendarEvents}
-          startAccessor="start"
-          endAccessor="end"
-          date={currentDate}
-          view={Views.WEEK}
-          onNavigate={handleNavigate}
-          onView={() => {}} // We handle view changes with our own buttons
-          onSelectEvent={handleSelectEvent}
-          selectable={false}
-          components={{
-            toolbar: () => null, // We use our own toolbar
-            event: EventComponent,
-          }}
-          step={30}
-          timeslots={2}
-          showMultiDayTimes
-          views={{
-            week: true,
-          }}
-          formats={{
-            timeGutterFormat: 'h A',
-            dayHeaderFormat: 'ddd M/D',
-          }}
-          min={new Date(0, 0, 0, 6, 0, 0)}
-          max={new Date(0, 0, 0, 22, 0, 0)}
-          scrollToTime={new Date(0, 0, 0, 8, 0, 0)}
-          className={styles.bigCalendar}
-        />
+        <ErrorBoundary>
+          <BigCalendar
+            localizer={localizer}
+            events={bigCalendarEvents}
+            startAccessor="start"
+            endAccessor="end"
+            date={currentDate}
+            view={Views.WEEK}
+            onNavigate={handleNavigate}
+            onView={() => {}} // We handle view changes with our own buttons
+            onSelectEvent={handleSelectEvent}
+            selectable={false}
+            components={{
+              toolbar: () => null, // We use our own toolbar
+              event: EventComponent,
+            }}
+            step={30}
+            timeslots={2}
+            showMultiDayTimes
+            views={{
+              week: true,
+            }}
+            formats={{
+              timeGutterFormat: 'h A',
+              dayHeaderFormat: 'ddd M/D',
+            }}
+            min={new Date(0, 0, 0, 6, 0, 0)}
+            max={new Date(0, 0, 0, 22, 0, 0)}
+            scrollToTime={new Date(0, 0, 0, 8, 0, 0)}
+            className={styles.bigCalendar}
+          />
+        </ErrorBoundary>
       </div>
     </div>
   );

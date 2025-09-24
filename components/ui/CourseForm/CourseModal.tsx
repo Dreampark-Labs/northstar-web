@@ -18,6 +18,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { courseSchema, type CourseFormData } from '@/lib/validation';
+import { useSafePortal, useSafeBodyStyle } from '@/hooks/useSafePortal';
 import styles from './CourseModal.module.css';
 
 interface CourseFormUI {
@@ -35,12 +36,32 @@ interface CourseFormUI {
   room: string;
 }
 
+interface CourseFormErrors {
+  title?: string;
+  code?: string;
+  creditHours?: string;
+  instructor?: string;
+  termId?: string;
+  isOnline?: string;
+  hasOnlineMeetings?: string;
+  meetingDays?: string;
+  meetingStart?: string;
+  meetingEnd?: string;
+  building?: string;
+  room?: string;
+}
+
 interface CourseModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function CourseModal({ isOpen, onClose }: CourseModalProps) {
+  const { createSafePortal } = useSafePortal();
+  
+  // Prevent body scroll when modal is open
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
+  
   const [formData, setFormData] = useState<CourseFormUI>({
     title: '',
     code: '',
@@ -55,7 +76,7 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
     building: '',
     room: ''
   });
-  const [errors, setErrors] = useState<Partial<CourseFormUI>>({});
+  const [errors, setErrors] = useState<CourseFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState<'form' | 'success'>('form');
   
@@ -72,7 +93,7 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
   useEffect(() => {
     if (isOpen) {
       // Auto-select current term if available
-      const currentTerm = terms?.find(term => term.status === 'current');
+      const currentTerm = terms?.find((term: any) => term.status === 'current');
       
       setFormData({
         title: '',
@@ -122,7 +143,7 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
   }, [isOpen, onClose]);
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<CourseFormUI> = {};
+    const newErrors: CourseFormErrors = {};
 
     try {
       // Create validation data
@@ -277,7 +298,7 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
   if (!isOpen) return null;
 
   if (step === 'success') {
-    return (
+    const successContent = (
       <div className={styles.overlay} onClick={onClose}>
         <div className={styles.modal} onClick={e => e.stopPropagation()}>
           <div className={styles.successContent}>
@@ -292,9 +313,11 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
         </div>
       </div>
     );
+    
+    return createSafePortal(successContent);
   }
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
@@ -321,7 +344,7 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
                 onChange={(e) => handleInputChange('termId', e.target.value)}
               >
                 <option value="">Select a term</option>
-                {terms?.map(term => (
+                {terms?.map((term: any) => (
                   <option key={term._id} value={term._id}>
                     {term.name} ({term.status === 'current' ? 'Current' : term.status === 'future' ? 'Future' : 'Past'})
                   </option>
@@ -654,4 +677,6 @@ export function CourseModal({ isOpen, onClose }: CourseModalProps) {
       </div>
     </div>
   );
+  
+  return createSafePortal(modalContent);
 }

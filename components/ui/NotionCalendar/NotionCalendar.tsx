@@ -19,6 +19,7 @@ import {
 import { type CalendarEvent } from '@/components/ui/Calendar';
 import { useEventDetailsModal } from '@/providers/EventDetailsModalProvider';
 import { useAddEventModal } from '@/providers/AddEventModalProvider';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import styles from './NotionCalendar.module.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -138,7 +139,7 @@ export function NotionCalendar({
   // Combine database events with mock events
   const allEvents = useMemo(() => {
     // Convert database events to CalendarEvent format
-    const convertedDbEvents: CalendarEvent[] = dbEvents.map(dbEvent => ({
+    const convertedDbEvents: CalendarEvent[] = dbEvents.map((dbEvent: any) => ({
       id: dbEvent._id,
       title: dbEvent.title,
       type: dbEvent.type,
@@ -606,39 +607,41 @@ export function NotionCalendar({
 
         {/* Big Calendar */}
         <div className={styles.bigCalendarContainer}>
-          <BigCalendar
-            localizer={localizer}
-            events={bigCalendarEvents}
-            startAccessor="start"
-            endAccessor="end"
-            date={currentDate}
-            view={mapViewToBigCalendar(currentView)}
-            onNavigate={handleNavigate}
-            onView={() => {}} // We handle view changes with our own buttons
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            selectable
-            components={{
-              toolbar: () => null, // We use our own toolbar
-              event: EventComponent,
-            }}
-            step={30}
-            timeslots={2}
-            showMultiDayTimes
-            views={{
-              month: true,
-              week: true,
-              day: true,
-            }}
-            formats={{
-              timeGutterFormat: 'h A',
-              dayHeaderFormat: 'ddd M/D',
-            }}
-            min={new Date(0, 0, 0, 0, 0, 0)}
-            max={new Date(0, 0, 0, 23, 59, 59)}
-            scrollToTime={new Date(0, 0, 0, 8, 0, 0)}
-            className={styles.bigCalendar}
-          />
+          <ErrorBoundary>
+            <BigCalendar
+              localizer={localizer}
+              events={bigCalendarEvents}
+              startAccessor="start"
+              endAccessor="end"
+              date={currentDate}
+              view={mapViewToBigCalendar(currentView)}
+              onNavigate={handleNavigate}
+              onView={() => {}} // We handle view changes with our own buttons
+              onSelectEvent={handleSelectEvent}
+              onSelectSlot={handleSelectSlot}
+              selectable
+              components={{
+                toolbar: () => null, // We use our own toolbar
+                event: EventComponent,
+              }}
+              step={30}
+              timeslots={2}
+              showMultiDayTimes
+              views={{
+                month: true,
+                week: true,
+                day: true,
+              }}
+              formats={{
+                timeGutterFormat: 'h A',
+                dayHeaderFormat: 'ddd M/D',
+              }}
+              min={new Date(0, 0, 0, 0, 0, 0)}
+              max={new Date(0, 0, 0, 23, 59, 59)}
+              scrollToTime={new Date(0, 0, 0, 8, 0, 0)}
+              className={styles.bigCalendar}
+            />
+          </ErrorBoundary>
         </div>
       </div>
 

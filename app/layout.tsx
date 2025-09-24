@@ -1,23 +1,24 @@
 import { Metadata } from 'next';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { ConvexProvider } from '@/providers/ConvexProvider';
+import OnboardingGate from '@/providers/OnboardingGate';
+import { ClerkProvider } from '@/providers/ClerkProvider';
 import { ExternalAuthProvider } from '@/providers/ExternalAuthProvider';
 import { NavigationProvider } from '@/providers/NavigationProvider';
 import { SidebarProvider } from '@/providers/SidebarProvider';
 import { TermSelectorProvider } from '@/providers/TermSelectorProvider';
-import { CommandPaletteProvider } from '@/providers/CommandPaletteProvider';
+import { CommandPaletteProviderWrapper } from '@/components/CommandPaletteProviderWrapper';
 import { CookieConsentProvider } from '@/providers/CookieConsentProvider';
 // import { CSPostHogProvider } from '@/providers/PostHogProvider';
-import { CourseModalProvider } from '@/providers/CourseModalProvider';
-import { AssignmentModalProvider } from '@/providers/AssignmentModalProvider';
-import { AssignmentDetailsModalProvider } from '@/providers/AssignmentDetailsModalProvider';
-import { AddEventModalProvider } from '@/providers/AddEventModalProvider';
-import { EventDetailsModalProvider } from '@/providers/EventDetailsModalProvider';
+import { CourseModalProviderWrapper } from '@/components/CourseModalProviderWrapper';
+import { AssignmentModalProviderWrapper } from '@/components/AssignmentModalProviderWrapper';
+import { AssignmentDetailsModalProviderWrapper } from '@/components/AssignmentDetailsModalProviderWrapper';
+import { AddEventModalProviderWrapper } from '@/components/AddEventModalProviderWrapper';
+import { EventDetailsModalProviderWrapper } from '@/components/EventDetailsModalProviderWrapper';
 import { ScheduleModalProvider } from '@/providers/ScheduleModalProvider';
-import { TermSelectorModalProvider } from '@/providers/TermSelectorModalProvider';
+import { TermSelectorModalProviderWrapper } from '@/components/TermSelectorModalProviderWrapper';
 import { ServerAppLayout } from '@/components/layout/ServerAppLayout';
 import { ConvexErrorBoundary } from '@/components/ErrorBoundary';
-import { ConvexDebugComponent } from '@/components/ConvexDebugComponent';
 // import { PostHogDebugComponent } from '@/components/PostHogDebugComponent';
 import '@/styles/global.css';
 
@@ -64,45 +65,48 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <ExternalAuthProvider>
-            <ConvexProvider>
-              <ConvexErrorBoundary>
-                {/* <CSPostHogProvider> */}
-                  <CookieConsentProvider>
-                    <NavigationProvider>
-                      <SidebarProvider>
-                        <TermSelectorProvider>
-                          <CourseModalProvider>
-                            <AssignmentModalProvider>
-                              <AssignmentDetailsModalProvider>
-                                <AddEventModalProvider>
-                                  <EventDetailsModalProvider>
-                                    <ScheduleModalProvider>
-                                      <TermSelectorModalProvider>
-                                        <CommandPaletteProvider>
-                                        <ServerAppLayout>
-                                          {children}
-                                          <ConvexDebugComponent />
-                                          {/* <PostHogDebugComponent /> */}
-                                        </ServerAppLayout>
-                                      </CommandPaletteProvider>
-                                    </TermSelectorModalProvider>
+          <ClerkProvider>
+            <ExternalAuthProvider>
+              <ConvexProvider>
+                <ConvexErrorBoundary>
+                  {/* <CSPostHogProvider> */}
+                    <CookieConsentProvider>
+                      <NavigationProvider>
+                        <CourseModalProviderWrapper>
+                          <AssignmentModalProviderWrapper>
+                            <AssignmentDetailsModalProviderWrapper>
+                              <AddEventModalProviderWrapper>
+                                <EventDetailsModalProviderWrapper>
+                                  <ScheduleModalProvider>
+                                    <CommandPaletteProviderWrapper>
+                                      <SidebarProvider>
+                                        <TermSelectorProvider>
+                                          <TermSelectorModalProviderWrapper>
+                                            <ServerAppLayout>
+                                              <OnboardingGate>
+                                                {children}
+                                              </OnboardingGate>
+                                              {/* <PostHogDebugComponent /> */}
+                                            </ServerAppLayout>
+                                          </TermSelectorModalProviderWrapper>
+                                        </TermSelectorProvider>
+                                      </SidebarProvider>
+                                    </CommandPaletteProviderWrapper>
                                   </ScheduleModalProvider>
-                                </EventDetailsModalProvider>
-                              </AddEventModalProvider>
-                            </AssignmentDetailsModalProvider>
-                          </AssignmentModalProvider>
-                        </CourseModalProvider>
-                      </TermSelectorProvider>
-                    </SidebarProvider>
-                  </NavigationProvider>
-                </CookieConsentProvider>
-              {/* </CSPostHogProvider> */}
+                                </EventDetailsModalProviderWrapper>
+                              </AddEventModalProviderWrapper>
+                            </AssignmentDetailsModalProviderWrapper>
+                          </AssignmentModalProviderWrapper>
+                        </CourseModalProviderWrapper>
+                      </NavigationProvider>
+                  </CookieConsentProvider>
+                {/* </CSPostHogProvider> */}
               </ConvexErrorBoundary>
             </ConvexProvider>
           </ExternalAuthProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+        </ClerkProvider>
+      </ThemeProvider>
+    </body>
+  </html>
+);
 }

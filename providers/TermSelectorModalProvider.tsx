@@ -27,11 +27,21 @@ interface TermSelectorModalProviderProps {
 
 export function TermSelectorModalProvider({ children }: TermSelectorModalProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const searchParams = useSearchParams();
+  
+  // Safely get search params - this will be null during static generation
+  let searchParams: URLSearchParams | null = null;
+  try {
+    searchParams = useSearchParams();
+  } catch (error) {
+    // During static generation, useSearchParams will throw
+    // We'll handle this gracefully
+  }
 
   // Monitor URL changes to open/close modal based on term parameter
   // This matches the AssignmentModal pattern
   useEffect(() => {
+    if (!searchParams) return; // Skip during static generation
+    
     const hasTermSelect = searchParams.get('term') === 'select';
     
     if (hasTermSelect && !isOpen) {

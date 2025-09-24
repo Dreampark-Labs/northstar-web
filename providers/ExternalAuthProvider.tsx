@@ -5,6 +5,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 interface AuthUser {
   id: string;
   token: string;
+  name?: string;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -44,9 +46,16 @@ export function ExternalAuthProvider({ children }: { children: ReactNode }) {
 
     const token = getCookie('auth-token');
     const userId = getCookie('auth-user-id');
+    const userName = getCookie('auth-user-name');
+    const userEmail = getCookie('auth-user-email');
 
     if (token && userId) {
-      setUser({ id: userId, token });
+      setUser({ 
+        id: userId, 
+        token,
+        name: userName || undefined,
+        email: userEmail || undefined
+      });
     } else {
       setUser(null);
     }
@@ -57,16 +66,16 @@ export function ExternalAuthProvider({ children }: { children: ReactNode }) {
     // Only run on client side
     if (typeof window === 'undefined') return;
 
-    // Clear cookies
-    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = 'auth-user-id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    // Clear basic cookies first
+    document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+    document.cookie = 'auth-user-id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+    document.cookie = 'auth-user-name=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
+    document.cookie = 'auth-user-email=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure';
     
     setUser(null);
     
-    // Redirect to external auth portal
-    const authPortalUrl = new URL('http://localhost:3002/logout');
-    authPortalUrl.searchParams.set('redirect', window.location.origin);
-    window.location.href = authPortalUrl.toString();
+    // First try to force logout via Clerk, then fallback to comprehensive clearing
+    window.location.href = '/auth/force-logout';
   };
 
   useEffect(() => {

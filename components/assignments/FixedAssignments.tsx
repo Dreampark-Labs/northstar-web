@@ -23,7 +23,7 @@ function DueSoon({ maxItems = 8, onAssignmentClick }: { maxItems?: number; onAss
 
   const courseMap = React.useMemo(() => {
     if (!courses) return {};
-    return courses.reduce((map, course) => {
+    return courses.reduce((map: any, course: any) => {
       map[course._id] = course;
       return map;
     }, {} as Record<string, any>);
@@ -33,11 +33,11 @@ function DueSoon({ maxItems = 8, onAssignmentClick }: { maxItems?: number; onAss
     if (!assignments) return [];
     
     return assignments
-      .map(assignment => ({
+      .map((assignment: any) => ({
         ...assignment,
         course: courseMap[assignment.courseId]
       }))
-      .filter(assignment => assignment.course)
+      .filter((assignment: any) => assignment.course)
       .slice(0, maxItems);
   }, [assignments, courseMap, maxItems]);
 
@@ -91,7 +91,7 @@ function DueSoon({ maxItems = 8, onAssignmentClick }: { maxItems?: number; onAss
 
   return (
     <div style={{ height: '100%', overflow: 'auto' }}>
-      {enrichedAssignments.map((assignment) => (
+      {enrichedAssignments.map((assignment: any) => (
         <div
           key={assignment._id}
           onClick={() => onAssignmentClick?.(assignment._id)}
@@ -160,7 +160,7 @@ function Overdue({ maxItems = 10, onAssignmentClick }: { maxItems?: number; onAs
 
   const courseMap = React.useMemo(() => {
     if (!courses) return {};
-    return courses.reduce((map, course) => {
+    return courses.reduce((map: any, course: any) => {
       map[course._id] = course;
       return map;
     }, {} as Record<string, any>);
@@ -173,12 +173,12 @@ function Overdue({ maxItems = 10, onAssignmentClick }: { maxItems?: number; onAs
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
     return assignments
-      .filter(assignment => assignment.status !== 'done')
-      .map(assignment => ({
+      .filter((assignment: any) => assignment.status !== 'done')
+      .map((assignment: any) => ({
         ...assignment,
         course: courseMap[assignment.courseId]
       }))
-      .filter(assignment => assignment.course && new Date(assignment.dueAt) < today)
+      .filter((assignment: any) => assignment.course && new Date(assignment.dueAt) < today)
       .slice(0, maxItems);
   }, [assignments, courseMap, maxItems]);
 
@@ -210,7 +210,7 @@ function Overdue({ maxItems = 10, onAssignmentClick }: { maxItems?: number; onAs
 
   return (
     <div style={{ height: '100%', overflow: 'auto' }}>
-      {overdueAssignments.map((assignment) => (
+      {overdueAssignments.map((assignment: any) => (
         <div
           key={assignment._id}
           onClick={() => onAssignmentClick?.(assignment._id)}
@@ -301,7 +301,7 @@ function AllAssignmentsList({ onCreateAssignment, onAssignmentClick }: {
 
   const courseMap = React.useMemo(() => {
     if (!courses) return {};
-    return courses.reduce((map, course) => {
+    return courses.reduce((map: any, course: any) => {
       map[course._id] = course;
       return map;
     }, {} as Record<string, any>);
@@ -341,7 +341,7 @@ function AllAssignmentsList({ onCreateAssignment, onAssignmentClick }: {
 
   return (
     <div style={{ height: '100%', overflow: 'auto' }}>
-      {assignments.map((assignment) => {
+      {assignments.map((assignment: any) => {
         const course = courseMap[assignment.courseId];
         return (
           <div

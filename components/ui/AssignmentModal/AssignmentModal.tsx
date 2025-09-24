@@ -15,6 +15,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { assignmentSchema, type AssignmentFormData } from '@/lib/validation';
+import { useSafePortal, useSafeBodyStyle } from '@/hooks/useSafePortal';
 import styles from './AssignmentModal.module.css';
 
 interface AssignmentFormUI {
@@ -33,6 +34,11 @@ interface AssignmentModalProps {
 }
 
 export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
+  const { createSafePortal } = useSafePortal();
+  
+  // Prevent body scroll when modal is open
+  useSafeBodyStyle(isOpen, 'overflow', 'hidden', 'unset');
+  
   const [formData, setFormData] = useState<AssignmentFormUI>({
     title: '',
     termId: '',
@@ -55,7 +61,7 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
   
   // Filter courses by selected term client-side
   const courses = formData.termId 
-    ? allCourses?.filter(course => course.termId === formData.termId)
+    ? allCourses?.filter((course: any) => course.termId === formData.termId)
     : allCourses;
   
   // Create assignment mutation
@@ -65,7 +71,7 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
   useEffect(() => {
     if (isOpen) {
       // Auto-select current term if available
-      const currentTerm = terms?.find(term => term.status === 'current');
+      const currentTerm = terms?.find((term: any) => term.status === 'current');
       
       setFormData({
         title: '',
@@ -218,7 +224,7 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
   if (!isOpen) return null;
 
   if (step === 'success') {
-    return (
+    const successContent = (
       <div className={styles.overlay} onClick={onClose}>
         <div className={styles.modal} onClick={e => e.stopPropagation()}>
           <div className={styles.successContent}>
@@ -233,9 +239,11 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
         </div>
       </div>
     );
+    
+    return createSafePortal(successContent);
   }
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
@@ -288,7 +296,7 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
                 onChange={(e) => handleInputChange('termId', e.target.value)}
               >
                 <option value="">Select a term</option>
-                {terms?.map(term => (
+                {terms?.map((term: any) => (
                   <option key={term._id} value={term._id}>
                     {term.name} ({term.status === 'current' ? 'Current' : term.status === 'future' ? 'Future' : 'Past'})
                   </option>
@@ -315,7 +323,7 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
                 disabled={!formData.termId}
               >
                 <option value="">{!formData.termId ? 'Select a term first' : 'Select a course'}</option>
-                {courses?.map(course => (
+                {courses?.map((course: any) => (
                   <option key={course._id} value={course._id}>
                     {course.code} - {course.title}
                   </option>
@@ -448,4 +456,6 @@ export function AssignmentModal({ isOpen, onClose }: AssignmentModalProps) {
       </div>
     </div>
   );
+  
+  return createSafePortal(modalContent);
 }

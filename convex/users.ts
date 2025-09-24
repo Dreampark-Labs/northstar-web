@@ -90,7 +90,10 @@ export const updateUserProfile = mutation({
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthorized");
+    if (!identity) {
+      console.error('Convex Unauthorized: no identity');
+      throw new Error("Unauthorized");
+    }
 
     const user = await ctx.db
       .query("users")
@@ -112,6 +115,7 @@ export const updateAcademicInfo = mutation({
     major: v.optional(v.string()),
     majorCategory: v.optional(v.string()),
     minor: v.optional(v.string()),
+    currentYear: v.optional(v.string()),
     gpa: v.optional(v.number()),
     transferGPA: v.optional(v.number()),
     transferCredits: v.optional(v.number()),
@@ -162,6 +166,47 @@ export const updateAcademicInfo = mutation({
   },
 });
 
+export const setActiveTerm = mutation({
+  args: { termId: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", identity.subject))
+      .first();
+
+    if (!user) throw new Error("User not found");
+
+    await ctx.db.patch(user._id, { currentActiveTerm: args.termId, updatedAt: Date.now() });
+  },
+});
+
+export const ensureOnboardingStatus = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return { needsDemographics: false, needsAcademic: false, needsTerm: false };
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", identity.subject))
+      .first();
+    if (!user) return { needsDemographics: true, needsAcademic: true, needsTerm: true };
+
+    const needsDemographics = !user.birthday || !user.gender || !user.ethnicity;
+    const needsAcademic = !user.school || !user.majorCategory || !user.currentYear;
+
+    const hasAnyTerms = await ctx.db
+      .query("terms")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .first();
+    const needsTerm = !hasAnyTerms;
+
+    return { needsDemographics, needsAcademic, needsTerm, currentActiveTerm: user.currentActiveTerm } as any;
+  },
+});
+
 export const markDemographicsComplete = mutation({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -195,6 +240,32 @@ export const markGuidedTourComplete = mutation({
 
     return await ctx.db.patch(user._id, {
       hasCompletedGuidedTour: true,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
+// Debug utility to manually bypass onboarding (remove in production)
+export const forceCompleteOnboarding = mutation({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthorized");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_clerkUserId", (q) => q.eq("clerkUserId", identity.subject))
+      .first();
+
+    if (!user) throw new Error("User not found");
+
+    return await ctx.db.patch(user._id, {
+      hasCompletedDemographics: true,
+      birthday: user.birthday || Date.now(),
+      gender: user.gender || "Prefer not to say",
+      ethnicity: user.ethnicity || "Prefer not to say",
+      school: user.school || "Test University",
+      majorCategory: user.majorCategory || "Other",
+      currentYear: user.currentYear || "Sophomore",
       updatedAt: Date.now(),
     });
   },
