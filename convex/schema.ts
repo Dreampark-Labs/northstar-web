@@ -1,0 +1,103 @@
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+
+export default defineSchema({
+  assignments: defineTable({
+    courseId: v.id("courses"),
+    dueAt: v.float64(),
+    grade: v.optional(v.float64()),
+    lc_title: v.string(),
+    notes: v.optional(v.string()),
+    status: v.string(),
+    title: v.string(),
+    userId: v.id("users"),
+  }),
+  courses: defineTable({
+    building: v.optional(v.string()),
+    code: v.string(),
+    creditHours: v.float64(),
+    deliveryFormat: v.optional(v.string()), // "in-person" or "virtual" - optional for backward compatibility
+    deliveryMode: v.optional(v.string()), // "synchronous" or "asynchronous" (only for virtual)
+    instructor: v.string(),
+    lc_code: v.string(),
+    lc_title: v.string(),
+    meetingDays: v.optional(v.array(v.string())),
+    meetingEnd: v.optional(v.string()),
+    meetingStart: v.optional(v.string()),
+    room: v.optional(v.string()),
+    termId: v.id("terms"),
+    title: v.string(),
+    userId: v.id("users"),
+  }),
+  ethnicities: defineTable({
+    lc_name: v.string(),
+    name: v.string(),
+  }),
+  events: defineTable({
+    attendees: v.optional(
+      v.array(
+        v.object({ initials: v.string(), name: v.string() })
+      )
+    ),
+    color: v.string(),
+    courseCode: v.optional(v.string()),
+    courseId: v.optional(v.id("courses")),
+    description: v.optional(v.string()),
+    endTime: v.float64(),
+    lc_title: v.string(),
+    location: v.string(),
+    startTime: v.float64(),
+    title: v.string(),
+    type: v.string(),
+    userId: v.id("users"),
+  }),
+  majorCategories: defineTable({
+    commonMajors: v.array(v.string()),
+    description: v.string(),
+    lc_name: v.string(),
+    name: v.string(),
+  }),
+  schools: defineTable({
+    city: v.string(),
+    lc_name: v.string(),
+    name: v.string(),
+    state: v.string(),
+    type: v.string(),
+    website: v.optional(v.string()),
+  }),
+  terms: defineTable({
+    endDate: v.string(),
+    lc_name: v.string(),
+    name: v.string(),
+    startDate: v.string(),
+    status: v.string(),
+    userId: v.id("users"),
+  }),
+  users: defineTable({
+    birthday: v.float64(),
+    clerkUserId: v.string(),
+    createdAt: v.float64(),
+    currentActiveTerm: v.optional(v.id("terms")),
+    currentYear: v.optional(v.string()),
+    email: v.string(),
+    ethnicity: v.string(),
+    expectedGraduationDate: v.optional(v.string()),
+    firstName: v.string(),
+    gender: v.string(),
+    gpa: v.optional(v.float64()),
+    hasCompletedDemographics: v.boolean(),
+    hasCompletedGuidedTour: v.boolean(),
+    lastName: v.optional(v.string()),
+    location: v.optional(v.string()),
+    major: v.string(),
+    majorCategory: v.string(),
+    minor: v.string(),
+    phoneNumber: v.optional(v.string()),
+    school: v.string(),
+    totalAssignments: v.float64(),
+    totalClassesEnrolled: v.float64(),
+    totalSubmissions: v.float64(),
+    totalTermsCreated: v.float64(),
+    updatedAt: v.float64(),
+  }),
+});

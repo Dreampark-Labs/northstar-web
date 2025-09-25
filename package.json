@@ -9,8 +9,11 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.48.1",
     "@react-router/node": "^7.7.1",
     "@react-router/serve": "^7.7.1",
+    "convex": "^1.27.3",
+    "framer-motion": "^12.23.21",
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
